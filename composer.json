@@ -1,0 +1,42 @@
+{
+    "name": "subscription/iCalendar",
+    "description": "ICalendar objects manipulation based on RFC 2445",
+    "keywords": [
+        "subscription",
+        "iCalendar"
+    ],
+    "homepage": "https://github.com/fahernandez/iCalendar",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": ":Fabian Hernandez",
+            "email": "fabian.hernandez@hulihealth.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Subscription\\ICalendar\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Subscription\\ICalendar\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
