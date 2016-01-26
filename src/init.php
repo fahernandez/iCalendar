@@ -47,6 +47,6 @@ $subscription = (new Subscription(new Aws()))
     ->set_language(Language::SPANISH)
     ->set_prodid('@hulihealth.com')
     ->set_cal_name('Calendario Huli Practice')
-    ->set_cal_desc('Calendario Dr Julio Health')
+    ->set_cal_desc('Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum')
     ->set_relcaid(uniqid())
     ->build();

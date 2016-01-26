@@ -30,6 +30,11 @@ class Build
     const VCALENDAR_TEMPLATE = '/VCalendar.txt';
 
     /**
+     * New line field delimiter
+     */
+    const FIELD_DELIMITER = "\r\n";
+
+    /**
      * File handler for the template where the vobject is stored
      */
     private $file_template;
@@ -77,12 +82,108 @@ class Build
 
     /**
      * Format the template according with the rules defined on RFC 2445
+     *
+     * Lines of text SHOULD NOT be longer than 75 octets, excluding the line
+     * break. Long content lines SHOULD be split into a multiple line
+     * representations using a line "folding" technique. That is, a long
+     * line can be split between any two characters by inserting a CRLF
+     * immediately followed by a single linear white space character (i.e.,
+     * SPACE, US-ASCII decimal 32 or HTAB, US-ASCII decimal 9). Any sequence
+     * of CRLF followed immediately by a single linear white space character
+     * is ignored (i.e., removed) when processing the content type.
+     *
      * @param  string $processed_content
      * @return string
      */
     private function format_content($processed_content)
     {
+        $separated_content = preg_split('/$\R?^/m', $processed_content);
+        foreach ($separated_content as $index => $line) {
+            $separated_content[$index] = $this->size_75($line);
+        }
 
+        return implode($separated_content);
+    }
+
+    /**
+     * Size a line to 75 chars
+     * This library was modified to fullfill the requirements of this particular
+     * implementation. But the backbone of this function was build by the author
+     * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+     * @since 2.16.2 - 2012-12-18
+     * @param string $value
+     * @return string
+     */
+    private function size_75($string)
+    {
+        $tmp = $string;
+        $string = '';
+        $cCnt = $x = 0;
+        while (true) {
+            if (!isset($tmp[$x])) {
+                $string .= self::FIELD_DELIMITER;
+                break;
+            } elseif ((74 <= $cCnt) && ('\\' == $tmp[$x]) && ('n' == $tmp[$x+1])) {
+                $string .= self::FIELD_DELIMITER . ' \n';
+                $x += 2;
+                if (!isset($tmp[$x])) {
+                    $string .= self::FIELD_DELIMITER;
+                    break;
+                }
+                $cCnt = 3;
+            } elseif (75 <= $cCnt) {
+                $string .= self::FIELD_DELIMITER . ' ';
+                $cCnt = 1;
+            }
+            $byte = ord($tmp[$x]);
+            $string .= $tmp[$x];
+            switch (true) { // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                case (($byte >= 0x20) && ($byte <= 0x7F)):
+                    $cCnt += 1;
+                    break;
+                case (($byte & 0xE0) == 0xC0):
+                    if (isset($tmp[$x+1])) {
+                        $cCnt += 1;
+                        $string .= $tmp[$x+1];
+                        $x += 1;
+                    }
+                    break;
+                case (($byte & 0xF0) == 0xE0):
+                    if (isset($tmp[$x+2])) {
+                        $cCnt += 1;
+                        $string .= $tmp[$x+1] . $tmp[$x+2];
+                        $x += 2;
+                    }
+                    break;
+                case (($byte & 0xF8) == 0xF0):
+                    if (isset($tmp[$x+3])) {
+                        $cCnt += 1;
+                        $string .= $tmp[$x+1] . $tmp[$x+2] . $tmp[$x+3];
+                        $x += 3;
+                    }
+                    break;
+                case (($byte & 0xFC) == 0xF8):
+                    if (isset($tmp[$x+4])) {
+                        $cCnt += 1;
+                        $string .= $tmp[$x+1] . $tmp[$x+2] . $tmp[$x+3] .
+                            $tmp[$x+4];
+                        $x += 4;
+                    }
+                    break;
+                case (($byte & 0xFE) == 0xFC):
+                    if (isset($tmp[$x+5])) {
+                        $cCnt += 1;
+                        $string .= $tmp[$x+1] . $tmp[$x+2] . $tmp[$x+3] .
+                            $tmp[$x+4] . $tmp[$x+5];
+                        $x += 5;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            $x += 1;
+        }
+        return $string;
     }
 
 }
