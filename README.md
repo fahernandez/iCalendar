@@ -14,14 +14,14 @@ ICalendar objects manipulation based on RFC 2445. This libraries let the user cr
 Via Composer
 
 ``` bash
-$ composer require league/:package_name
+$ composer require subscription/iCalendar
 ```
 
 ## Usage
 
 ``` php
-$skeleton = new League\Skeleton();
-echo $skeleton->echoPhrase('Hello, League!');
+$calendar = new Subscription\ICalendar();
+echo $calendar->echoPhrase('Hello, League!');
 ```
 
 ## Change log
@@ -40,11 +40,11 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
-If you discover any security related issues, please email :author_email instead of using the issue tracker.
+If you discover any security related issues, please email fabian.hernandez@hulihealth.com instead of using the issue tracker.
 
 ## Credits
 
-- [:author_name][link-author]
+- [Fabian Hernandez][link-author]
 - [All Contributors][link-contributors]
 
 ## License

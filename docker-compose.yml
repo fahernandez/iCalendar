@@ -1,0 +1,7 @@
+php:
+    image: huli/php:5.6.12
+    environment:
+        TERM: xterm
+    volumes:
+        - ./src:/srv
+    working_dir: /srv
