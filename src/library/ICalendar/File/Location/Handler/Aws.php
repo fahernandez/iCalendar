@@ -1,9 +1,8 @@
 <?php
 /**
- * ICalendar file handler contract definition
+ * ICalendar aws file handler implementation
  *
- * Defines methods that all subscription file handler have to implement to handle
- * different subscription methods
+ * This class handle files to be saved and retrieved to an from AWS
  *
  * PHP 5
  *
@@ -18,15 +17,19 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-namespace ICalendar\File;
+namespace ICalendar\File\Location\Handler;
 
-interface IHandler
+use ICalendar\File\Location\IHandler;
+
+class Aws implements IHandler
 {
 
     /**
-     * Save a file into a location
-     * @param  string $file_name name of the file to be save
+     * Save a file into a S3 location
      * @return boolean
      */
-    public function save_file();
+    public function save($file_path)
+    {
+
+    }
 }

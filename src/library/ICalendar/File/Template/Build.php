@@ -28,11 +28,17 @@ class Build
      * Subscription template
      */
     const VCALENDAR_TEMPLATE = '/VCalendar.txt';
+    const VTIMEZONE_TEMPLATE = '/VTimeZone.txt';
 
     /**
      * New line field delimiter
      */
     const FIELD_DELIMITER = "\r\n";
+
+    /**
+     * String to split lines by end of line
+     */
+    const SPLIT_LINES_REGEX = '/$\R?^/m';
 
     /**
      * File handler for the template where the vobject is stored
@@ -44,8 +50,8 @@ class Build
      */
     public function __construct($template)
     {
-        $this->file_template = new File(__DIR__ . $template);
-        $this->file_template->open();
+        $this->file_template = new File();
+        $this->file_template->open(__DIR__ . $template);
     }
 
     /**
@@ -97,7 +103,7 @@ class Build
      */
     private function format_content($processed_content)
     {
-        $separated_content = preg_split('/$\R?^/m', $processed_content);
+        $separated_content = preg_split(self::SPLIT_LINES_REGEX, $processed_content);
         foreach ($separated_content as $index => $line) {
             $separated_content[$index] = $this->size_75($line);
         }

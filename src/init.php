@@ -31,7 +31,8 @@ foreach ($files as $file) {
 }
 
 use ICalendar\Subscription;
-use ICalendar\File\Handler\Aws;
+use ICalendar\TimeZone;
+use ICalendar\File\Location\Handler\Aws;
 use \ICalendar\Util\Language;
 
 if (!class_exists('Composer\Autoload\ClassLoader', false)) {
@@ -42,6 +43,14 @@ if (!class_exists('Composer\Autoload\ClassLoader', false)) {
     );
 }
 
+$time_zone = (new TimeZone())
+    ->set_tzid('America/Costa_Rica')
+    ->set_standard_dtstart(new DateTime())
+    ->set_offset_from('-0600')
+    ->set_offset_to('-0600')
+    ->set_standard_tzname('DST')
+    ->set_daylight_dtstart(new DateTime())
+    ->set_daylight_tzname('DLT');
 
 $subscription = (new Subscription(new Aws()))
     ->set_language(Language::SPANISH)
@@ -49,4 +58,5 @@ $subscription = (new Subscription(new Aws()))
     ->set_cal_name('Calendario Huli Practice')
     ->set_cal_desc('Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum Lorem itsum')
     ->set_relcaid(uniqid())
-    ->build();
+    ->set_time_zone($time_zone)
+    ->create();

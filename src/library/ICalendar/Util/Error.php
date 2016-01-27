@@ -28,7 +28,7 @@ class Error
      * Errors
      */
     const ERROR_MISSING_ATTRIBUTE = 'Attribute %s is requiered';
-    const ERROR_INVALID_ARGUMENT = 'Attribute %s is invalid for %s';
+    const ERROR_INVALID_ARGUMENT = 'Attribute %s is invalid for %s, please refer to RFC 2445';
 
     /**
      * Error message format

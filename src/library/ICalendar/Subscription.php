@@ -2,7 +2,7 @@
 /**
  * ICalendar subscription file
  *
- * Init a new calendar subscription instance
+ * Init a new calendar subscription instance(based RFC 2445)
  *
  * PHP 5
  *
@@ -19,10 +19,12 @@
 
 namespace ICalendar;
 
-use ICalendar\File\IHandler;
+use ICalendar\File\Location\IHandler;
 use ICalendar\Util\Error;
+use ICalendar\Util\File;
 use ICalendar\Util\Language;
 use ICalendar\File\Template\Build;
+use ICalendar\TimeZone as VTimeZone;
 
 class Subscription
 {
@@ -34,12 +36,13 @@ class Subscription
     const CAL_NAME = 'cal_name';
     const CAL_DESC = 'cal_desc';
     const RELCAID = 'relcaid';
+    const TIME_ZONE = 'time_zone';
 
     /**
-     * Handles all related to manage subscription files
+     * Saves/load files to its public location
      * @var IHandler
      */
-    private $file_handler;
+    private $file_location_handler;
 
     /**
      * This property specifies the identifier for the product that created the
@@ -74,24 +77,35 @@ class Subscription
     private $relcaid;
 
     /**
+     * Time Zone object for the subscription
+     * @var VTimeZone
+     */
+    private $time_zone;
+
+    /**
+     * Path location to the vcalendar .ics file
+     * @var string
+     */
+    private $vcalendar_file_location;
+
+    /**
      * Create a new Subscription instance
      */
-    public function __construct(IHandler $file_handler)
+    public function __construct(IHandler $file_location_handler)
     {
-        $this->file_handler = $file_handler;
+        $this->file_location_handler = $file_location_handler;
     }
 
     /**
-     * Create a new calendar subscription
-     * @return boolean
+     * Build a new vcalendar subscription string
+     * @return vcalendar formatted string
      */
     public function build()
     {
         $this->validate_calendar_attributes();
 
         // Construct a vcalendar object based on the templated
-        // The attributes must be on the order of the template
-        $vcalendar = (new Build(
+        return (new Build(
             Build::VCALENDAR_TEMPLATE
         ))->build([
             self::PRODID => $this->prodid,
@@ -100,9 +114,23 @@ class Subscription
             self::CAL_DESC => $this->cal_desc,
             self::RELCAID => $this->relcaid
         ]);
+    }
 
-        return $this;
+    /**
+     * Create a new calendar subscription
+     * @return void
+     */
+    public function create()
+    {
+        $vcalendar = $this->build();
+        $vtimezone = $this->time_zone->build();
 
+        $vcalendar = $this->insert_time_zone($vcalendar, $vtimezone);
+
+        $this->vcalendar_file_location = (new File())
+            ->save($vcalendar, $this->relcaid);
+
+        $this->file_location_handler->save($this->vcalendar_file_location);
     }
 
     /**
@@ -169,26 +197,58 @@ class Subscription
     }
 
     /**
+     * Set calendar time zone id value
+     * @param string $relcaid
+     */
+    public function set_time_zone(VTimeZone $time_zone)
+    {
+        $this->time_zone = $time_zone;
+
+        return $this;
+    }
+
+    /**
      * Validated that all the attributes needed for the calendar format are set
      * @return void Set an error in case of any the attributes are missing
      */
     private function validate_calendar_attributes()
     {
         if (!isset($this->prodid)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, ['prodid'], Error::ERROR);
+            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::PRODID], Error::ERROR);
         }
 
         if (!isset($this->cal_name)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, ['cal_name'], Error::ERROR);
+            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::CAL_NAME], Error::ERROR);
         }
 
         if (!isset($this->cal_desc)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, ['cal_desc'], Error::ERROR);
+            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::CAL_DESC], Error::ERROR);
         }
 
         if (!isset($this->relcaid)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, ['relcaid'], Error::ERROR);
+            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::RELCAID], Error::ERROR);
         }
+
+        if (!isset($this->time_zone)) {
+            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::TIME_ZONE], Error::ERROR);
+        }
+    }
+
+    /**
+     * Insert the vtimezone into the vcalendar string
+     * The vtimezone string will be inserted at the end of the vcalendar string
+     * @param  string $vcalendar formatted vcalendar string
+     * @param  string $vtimezone formatted vtimezone string
+     * @return string vtimezone inserted into the vcalendar object
+     */
+    private function insert_time_zone($vcalendar, $vtimezone)
+    {
+        $separated_content = preg_split(Build::SPLIT_LINES_REGEX, $vcalendar);
+        $end_vcalendar = $separated_content[count($separated_content)-1];
+        $separated_content[count($separated_content)-1] = $vtimezone;
+        array_push($separated_content, $end_vcalendar);
+
+        return implode($separated_content);
     }
 
 }

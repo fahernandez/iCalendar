@@ -1,0 +1,15 @@
+BEGIN:VTIMEZONE
+TZID:{tzid}
+BEGIN:STANDARD
+DTSTART:{standard_dtstart}
+TZOFFSETFROM:{offset_from}
+TZOFFSETTO:{offset_to}
+TZNAME:{standard_tzname}
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:{daylight_dtstart}
+TZOFFSETFROM:{offset_to}
+TZOFFSETTO:{offset_from}
+TZNAME:{daylight_tzname}
+END:DAYLIGHT
+END:VTIMEZONE
