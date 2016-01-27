@@ -32,7 +32,7 @@ foreach ($files as $file) {
 
 use ICalendar\Subscription;
 use ICalendar\TimeZone;
-use ICalendar\File\Location\Handler\Aws;
+use ICalendar\File\Location\Handler\AwsS3;
 use \ICalendar\Util\Language;
 
 if (!class_exists('Composer\Autoload\ClassLoader', false)) {
@@ -52,7 +52,15 @@ $time_zone = (new TimeZone())
     ->set_daylight_dtstart(new DateTime())
     ->set_daylight_tzname('DLT');
 
-$subscription = (new Subscription(new Aws()))
+$subscription = (new Subscription(new AwsS3(array(
+        // Bootstrap the configuration file with AWS specific features
+        'includes' => array('_aws'),
+        'credentials' => array(
+            'key'    => 'AKIAICNATEG4LN2GIHUQ',
+            'secret' => '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'
+        ),
+        'region' => 'us-west-2'
+    ), 'calendar.dev.subscription')))
     ->set_language(Language::SPANISH)
     ->set_prodid('@hulihealth.com')
     ->set_cal_name('Calendario Huli Practice')

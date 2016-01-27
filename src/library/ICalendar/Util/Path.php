@@ -52,7 +52,7 @@ class Path
             while (false !== ($file = readdir($handle))) {
                 if ($file != "." && $file != "..") {
                     $path = $dir . $file;
-                    unlink($path);
+                    $this->delete_file($path);
                 }
             }
             closedir($handle);
@@ -61,5 +61,15 @@ class Path
                 rmdir($dir);
             }
         }
+    }
+
+    /**
+     * Delete a file
+     * @param  string $path
+     * @return booleans
+     */
+    public function delete_file($path)
+    {
+        return unlink($path);
     }
 }

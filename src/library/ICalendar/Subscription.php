@@ -39,6 +39,11 @@ class Subscription
     const TIME_ZONE = 'time_zone';
 
     /**
+     * VCalendar mime type
+     */
+    const CONTENT_TYPE = 'text/calendar';
+
+    /**
      * Saves/load files to its public location
      * @var IHandler
      */
@@ -83,10 +88,10 @@ class Subscription
     private $time_zone;
 
     /**
-     * Path location to the vcalendar .ics file
+     * Public location where the file where saved
      * @var string
      */
-    private $vcalendar_file_location;
+    private $public_location;
 
     /**
      * Create a new Subscription instance
@@ -127,10 +132,17 @@ class Subscription
 
         $vcalendar = $this->insert_time_zone($vcalendar, $vtimezone);
 
-        $this->vcalendar_file_location = (new File())
+        $file = new file();
+        $tmp_location = $file
+            ->delete_file_on_destroy()
             ->save($vcalendar, $this->relcaid);
 
-        $this->file_location_handler->save($this->vcalendar_file_location);
+        $this->public_location = $this->file_location_handler->save(
+            $tmp_location,
+            self::CONTENT_TYPE
+        );
+
+        return $this;
     }
 
     /**

@@ -55,6 +55,7 @@ class File
     private $file_path;
     private $file_open_mode;
     private $file_handler;
+    private $delete_file = false;
 
     /**
      * Create the file instance
@@ -72,6 +73,10 @@ class File
     public function __destruct()
     {
         $this->close();
+
+        if ($this->delete_file) {
+            $this->delete();
+        }
     }
 
     /**
@@ -115,14 +120,14 @@ class File
     }
 
     /**
-     * Close the file handler
-     * @param handler $file_handler
+     * Method to indicate than the file must be deleted on destroy method
+     * @return $this
      */
-    public function close()
+    public function delete_file_on_destroy()
     {
-        if (is_resource($this->file_handler)) {
-            fclose($this->file_handler);
-        }
+        $this->delete_file = true;
+
+        return $this;
     }
 
     /**
@@ -136,6 +141,30 @@ class File
         }
 
         return fread($this->file_handler, filesize($this->file_path));
+    }
+
+    /**
+     * Close the file handler
+     * @param handler $file_handler
+     */
+    private function close()
+    {
+        if (is_resource($this->file_handler)) {
+            fclose($this->file_handler);
+        }
+    }
+
+    /**
+     * Delete a file on a location
+     * @return boolean
+     */
+    private function delete()
+    {
+        if (!is_readable($this->file_path)) {
+            Error::set(self::ERROR_NO_READABLE, [$this->file_path], Error::ERROR);
+        }
+
+        return (new Path())->delete_file($this->file_path);
     }
 
     /**
