@@ -3,5 +3,5 @@ php:
     environment:
         TERM: xterm
     volumes:
-        - ./src:/srv
+        - ./:/srv
     working_dir: /srv

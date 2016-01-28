@@ -142,7 +142,20 @@ class Subscription
             self::CONTENT_TYPE
         );
 
+        $this->load($this->public_location);
+
         return $this;
+    }
+
+    /**
+     * Load a file from its public location to edit it
+     * @param  string $public_location
+     * @return string
+     */
+    public function load($public_location)
+    {
+        $this->public_location = $public_location;
+        $this->file_location_handler->load($this->public_location, 'asd');
     }
 
     /**

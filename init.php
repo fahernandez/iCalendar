@@ -52,7 +52,7 @@ $time_zone = (new TimeZone())
     ->set_daylight_dtstart(new DateTime())
     ->set_daylight_tzname('DLT');
 
-$subscription = (new Subscription(new AwsS3(array(
+$aws = new AwsS3(array(
         // Bootstrap the configuration file with AWS specific features
         'includes' => array('_aws'),
         'credentials' => array(
@@ -60,7 +60,9 @@ $subscription = (new Subscription(new AwsS3(array(
             'secret' => 'cNR02Y6G+wKEAsgTKhxnP9xstitf9k4J9ncwHiKG'
         ),
         'region' => 'us-west-2'
-    ), 'calendar.dev.subscription')))
+    ), 'calendar.dev.subscription');
+
+$subscription = (new Subscription($aws))
     ->set_language(Language::SPANISH)
     ->set_prodid('@hulihealth.com')
     ->set_cal_name('Calendario Huli Practice')
