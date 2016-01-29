@@ -1,10 +1,14 @@
 
 
-Code Coverage Report:    
-  2016-01-28 23:16:13    
-                         
- Summary:                
-  Classes:  0.00% (0/8)  
-  Methods:  0.00% (0/47) 
-  Lines:    0.00% (0/401)
+Code Coverage Report:     
+  2016-01-29 01:25:26     
+                          
+ Summary:                 
+  Classes: 25.00% (2/8)   
+  Methods: 14.63% (6/41)  
+  Lines:   16.90% (49/290)
 
+\ICalendar\File\Template::Build
+  Methods:  80.00% ( 4/ 5)   Lines:  40.24% ( 33/ 82)
+\ICalendar\Util::Error
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)

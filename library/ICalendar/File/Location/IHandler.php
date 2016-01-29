@@ -20,6 +20,9 @@
 
 namespace ICalendar\File\Location;
 
+/**
+ * @codeCoverageIgnore
+ */
 interface IHandler
 {
 

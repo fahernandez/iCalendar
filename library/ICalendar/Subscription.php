@@ -95,6 +95,7 @@ class Subscription
 
     /**
      * Create a new Subscription instance
+     * @codeCoverageIgnore
      */
     public function __construct(IHandler $file_location_handler)
     {

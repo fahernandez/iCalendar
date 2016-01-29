@@ -24,6 +24,9 @@ use ICalendar\Util\Error;
 use \Aws\S3\S3Client;
 use \Aws\S3\Exception\S3Exception;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AwsS3 implements IHandler
 {
 

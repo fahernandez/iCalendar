@@ -1,1 +1,6 @@
 TAP version 13
+ok 1 - BuildTest::test_build_vcalendar
+ok 2 - BuildTest::test_build_vtimezone
+ok 3 - ErrorTest::test_set_error
+ok 4 - SubscriptionTest::test_create_instance
+1..4

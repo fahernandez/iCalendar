@@ -58,6 +58,7 @@ class Error
 
     /**
      * Error class cannot be instanced directly
+     * @codeCoverageIgnore
      */
     private function __contruct()
     {
