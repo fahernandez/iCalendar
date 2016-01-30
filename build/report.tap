@@ -2,5 +2,13 @@ TAP version 13
 ok 1 - BuildTest::test_build_vcalendar
 ok 2 - BuildTest::test_build_vtimezone
 ok 3 - ErrorTest::test_set_error
-ok 4 - SubscriptionTest::test_create_instance
-1..4
+ok 4 - FileTest::test_open
+ok 5 - FileTest::test_save
+ok 6 - LanguageTest::test_exists
+ok 7 - PathTest::test_create_path
+ok 8 - PathTest::test_delete_file
+ok 9 - SubscriptionTest::test_create_instance_aws
+ok 10 - SubscriptionTest::test_build_aws
+ok 11 - SubscriptionTest::test_create_aws
+ok 12 - TimeZoneTest::test_build_time_zone
+1..12

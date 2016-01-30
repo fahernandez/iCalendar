@@ -41,29 +41,6 @@ class Path
     }
 
     /**
-     * Remove all the files from a repository
-     * @param  string  $dir
-     * @param  boolean $delete_folder
-     * @return boolean
-     */
-    public function rrmdir($dir, $delete_folder = false)
-    {
-        if ($handle = opendir($dir)) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != "..") {
-                    $path = $dir . $file;
-                    $this->delete_file($path);
-                }
-            }
-            closedir($handle);
-
-            if ($delete_folder) {
-                rmdir($dir);
-            }
-        }
-    }
-
-    /**
      * Delete a file
      * @param  string $path
      * @return booleans

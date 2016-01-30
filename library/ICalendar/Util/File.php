@@ -19,8 +19,6 @@
 
 namespace ICalendar\Util;
 
-use \ICalendar\Util\Error;
-
 class File
 {
     /**
@@ -48,6 +46,7 @@ class File
      * Temporary file location
      */
     const TEMP_FILE_LOCATION = "%s/../../../tmp/%s.ics";
+    const TEMP_LOCATION = "/../../../tmp";
 
     /**
      * Class attributes
@@ -85,7 +84,8 @@ class File
      */
     public function open($file_path)
     {
-        $this->file_path = realpath($file_path);
+        $this->file_path = $this->get_real_path($file_path);
+
         $this->file_open_mode = self::R_PLUS;
 
         if (!is_readable($this->file_path)) {
@@ -100,11 +100,19 @@ class File
      * Create a file an save the string content into the file
      * @param  string $content string
      * @param  string $name    string
+     * @param  string $file_path    string
      * @return string file path where the file can be found
      */
-    public function save($content, $name)
+    public function save($content, $name, $file_path = null)
     {
-        $this->file_path = sprintf(self::TEMP_FILE_LOCATION, __DIR__, $name);
+        if (empty($file_path)) {
+            (new Path())->create_path(__DIR__ . self::TEMP_LOCATION);
+        }
+
+        $this->file_path = !empty($file_path)
+            ? $file_path . $name
+            : sprintf(self::TEMP_FILE_LOCATION, __DIR__, $name);
+
         $this->file_open_mode = self::W_PLUS;
 
         if (is_readable($this->file_path)) {
@@ -114,7 +122,7 @@ class File
         $this->open_handler();
 
         fwrite($this->file_handler, $content);
-        $this->file_path = realpath($this->file_path);
+        $this->file_path = $this->get_real_path($this->file_path);
 
         return $this->file_path;
     }
@@ -161,7 +169,7 @@ class File
     private function delete()
     {
         if (!is_readable($this->file_path)) {
-            Error::set(self::ERROR_NO_READABLE, [$this->file_path], Error::ERROR);
+            return false;
         }
 
         return (new Path())->delete_file($this->file_path);
@@ -173,5 +181,17 @@ class File
     private function open_handler()
     {
         $this->file_handler = fopen($this->file_path, $this->file_open_mode);
+    }
+
+    /**
+     * Get the absolute path related to a file
+     * @param  string $file_path
+     * @return string file absolute path
+     */
+    private function get_real_path($file_path)
+    {
+        return !empty(realpath($file_path))
+            ? realpath($file_path)
+            : $file_path;
     }
 }

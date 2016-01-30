@@ -160,6 +160,15 @@ class Subscription
     }
 
     /**
+     * Get the public location where the file was saved
+     * @return string
+     */
+    public function get_public_location()
+    {
+        return $this->public_location;
+    }
+
+    /**
      * Set prodid parameter
      * @param string $prodid
      */
@@ -234,6 +243,23 @@ class Subscription
     }
 
     /**
+     * Insert the vtimezone into the vcalendar string
+     * The vtimezone string will be inserted at the end of the vcalendar string
+     * @param  string $vcalendar formatted vcalendar string
+     * @param  string $vtimezone formatted vtimezone string
+     * @return string vtimezone inserted into the vcalendar object
+     */
+    public function insert_time_zone($vcalendar, $vtimezone)
+    {
+        $separated_content = preg_split(Build::SPLIT_LINES_REGEX, $vcalendar);
+        $end_vcalendar = $separated_content[count($separated_content)-1];
+        $separated_content[count($separated_content)-1] = $vtimezone;
+        array_push($separated_content, $end_vcalendar);
+
+        return implode($separated_content);
+    }
+
+    /**
      * Validated that all the attributes needed for the calendar format are set
      * @return void Set an error in case of any the attributes are missing
      */
@@ -258,23 +284,6 @@ class Subscription
         if (!isset($this->time_zone)) {
             Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::TIME_ZONE], Error::ERROR);
         }
-    }
-
-    /**
-     * Insert the vtimezone into the vcalendar string
-     * The vtimezone string will be inserted at the end of the vcalendar string
-     * @param  string $vcalendar formatted vcalendar string
-     * @param  string $vtimezone formatted vtimezone string
-     * @return string vtimezone inserted into the vcalendar object
-     */
-    private function insert_time_zone($vcalendar, $vtimezone)
-    {
-        $separated_content = preg_split(Build::SPLIT_LINES_REGEX, $vcalendar);
-        $end_vcalendar = $separated_content[count($separated_content)-1];
-        $separated_content[count($separated_content)-1] = $vtimezone;
-        array_push($separated_content, $end_vcalendar);
-
-        return implode($separated_content);
     }
 
 }

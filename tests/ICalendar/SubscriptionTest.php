@@ -18,30 +18,121 @@
  */
 
 use ICalendar\Subscription;
+use ICalendar\TimeZone;
+use \ICalendar\File\Template\Build;
+use \ICalendar\Util\Language;
 
 class SubscriptionTest extends PHPUnit_Framework_TestCase
 {
 
+    private $awss3;
+    private $time_zone;
+
+
     /**
-     * Test creating a instance of aws s3 file handling
+     * Create a instance of aws s3 file handling
      */
-    public function test_create_instance()
+    public function setup()
     {
-        $awss3 = $this->getMockBuilder('ICalendar\File\Location\Handler\AwsS3')
+        $this->awss3 = $this->getMockBuilder('ICalendar\File\Location\Handler\AwsS3')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $awss3->method('save')
+        $this->awss3->method('save')
              ->willReturn('https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics');
 
-        $awss3->method('delete')
+        $this->awss3->method('delete')
              ->willReturn(true);
 
-        $this->subscription = new Subscription($awss3);
-
-        $this->assertEquals(get_class($this->subscription), 'ICalendar\Subscription');
+        $this->time_zone = (new TimeZone())
+            ->set_tzid('America/Costa_Rica')
+            ->set_standard_dtstart(new DateTime('2000-01-01'))
+            ->set_offset_from('-0500')
+            ->set_offset_to('-0600')
+            ->set_standard_tzname('DST')
+            ->set_daylight_dtstart(new DateTime('2000-01-01'))
+            ->set_daylight_tzname('DLT');
     }
 
+    /**
+     * Testing create a instance of calendar subscription
+     * @covers ICalendar\Subscription::__construct
+     * @return void
+     */
+    public function test_create_instance_aws()
+    {
+        $subscription = new Subscription($this->awss3);
+        $this->assertEquals(get_class($subscription), 'ICalendar\Subscription');
+    }
+
+    /**
+     * Test buid a subscription
+     * @depends test_create_instance_aws
+     * @covers ICalendar\Subscription::build
+     * @covers ICalendar\Subscription::set_prodid
+     * @covers ICalendar\Subscription::set_language
+     * @covers ICalendar\Subscription::set_cal_name
+     * @covers ICalendar\Subscription::set_cal_desc
+     * @covers ICalendar\Subscription::set_relcaid
+     * @covers ICalendar\Subscription::set_time_zone
+     * @covers ICalendar\Subscription::validate_calendar_attributes
+     * @return void
+     */
+    public function test_build_aws()
+    {
+        $subscription = new Subscription($this->awss3);
+
+        $generated_content = $subscription
+            ->set_language(Language::SPANISH)
+            ->set_prodid('@hulihealth.com')
+            ->set_cal_name('Calendario Huli Practice')
+            ->set_cal_desc('Lorem itsum Lorem itsum')
+            ->set_relcaid('1232131231321')
+            ->set_time_zone($this->time_zone)
+            ->build();
+
+        $content_test = "BEGIN:VCALENDAR" . Build::FIELD_DELIMITER .
+            "VERSION:2.0" . Build::FIELD_DELIMITER .
+            "PRODID:-//@hulihealth.com//NONSGML v1.0//ES" . Build::FIELD_DELIMITER .
+            "CALSCALE:GREGORIAN" . Build::FIELD_DELIMITER .
+            "METHOD:PUBLISH" . Build::FIELD_DELIMITER .
+            "X-WR-CALNAME;LANGUAGE=ES:Calendario Huli Practice" . Build::FIELD_DELIMITER .
+            "X-WR-CALDESC;LANGUAGE=ES:Lorem itsum Lorem itsum" . Build::FIELD_DELIMITER .
+            "X-WR-RELCALID;LANGUAGE=ES:1232131231321" . Build::FIELD_DELIMITER .
+            "END:VCALENDAR"  . Build::FIELD_DELIMITER;
+
+        $this->assertEquals($generated_content, $content_test);
+
+        return $generated_content;
+    }
+
+    /**
+     * Test Create a new calendar subscription
+     * @depends test_create_instance_aws
+     * @covers ICalendar\Subscription::create
+     * @covers ICalendar\Subscription::get_public_location
+     * @covers ICalendar\Subscription::insert_time_zone
+     * @return void
+     */
+    public function test_create_aws()
+    {
+        $subscription = new Subscription($this->awss3);
+
+        $subscription
+            ->set_language(Language::SPANISH)
+            ->set_prodid('@hulihealth.com')
+            ->set_cal_name('Calendario Huli Practice')
+            ->set_cal_desc('Lorem itsum Lorem itsum')
+            ->set_relcaid('1232131231321')
+            ->set_time_zone($this->time_zone)
+            ->create();
+
+        $this->assertEquals(
+            $subscription->get_public_location(),
+            "https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics"
+        );
+
+    }
 
 
 }
