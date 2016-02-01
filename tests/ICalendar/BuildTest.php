@@ -39,7 +39,8 @@ class BuildTest extends PHPUnit_Framework_TestCase
             Subscription::LANGUAGE => 'EN',
             Subscription::CAL_NAME => 'Calendar Test',
             Subscription::CAL_DESC => 'Calendar Test description',
-            Subscription::RELCAID => '12312313'
+            Subscription::RELCAID => '12312313',
+            Subscription::TZID => 'America/Costa_Rica',
         ));
         $content_test = "BEGIN:VCALENDAR" . Build::FIELD_DELIMITER .
             "VERSION:2.0" . Build::FIELD_DELIMITER .
@@ -49,6 +50,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
             "X-WR-CALNAME;LANGUAGE=EN:Calendar Test" . Build::FIELD_DELIMITER .
             "X-WR-CALDESC;LANGUAGE=EN:Calendar Test description" . Build::FIELD_DELIMITER .
             "X-WR-RELCALID;LANGUAGE=EN:12312313" . Build::FIELD_DELIMITER .
+            "X-WR-TIMEZONE;LANGUAGE=EN:America/Costa_Rica" . Build::FIELD_DELIMITER .
             "END:VCALENDAR"  . Build::FIELD_DELIMITER;
 
         $this->assertEquals($generated_content, $content_test);

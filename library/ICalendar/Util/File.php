@@ -121,7 +121,14 @@ class File
 
         $this->open_handler();
 
+        $content = iconv(
+            'utf-8',
+            'utf-8//TRANSLIT//IGNORE',
+            $content
+        );
+
         fwrite($this->file_handler, $content);
+
         $this->file_path = $this->get_real_path($this->file_path);
 
         return $this->file_path;

@@ -1,0 +1,15 @@
+BEGIN:VEVENT
+UID:{uid}
+DTSTAMP:{dtstamp}
+CLASS:PUBLIC
+CREATED:{created}
+DESCRIPTION;LANGUAGE=ES:{description}
+DTSTART;TZID={tzid}:{dtstart}
+DTEND;TZID={tzid}:{dtend}
+LAST-MODIFIED:{last_modified}
+LOCATION;LANGUAGE=ES:{location}
+SEQUENCE:0
+STATUS:{status}
+SUMMARY;LANGUAGE=ES:{summary}
+TRANSP:OPAQUE
+END:VEVENT

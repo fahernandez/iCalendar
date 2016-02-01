@@ -99,6 +99,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             "X-WR-CALNAME;LANGUAGE=ES:Calendario Huli Practice" . Build::FIELD_DELIMITER .
             "X-WR-CALDESC;LANGUAGE=ES:Lorem itsum Lorem itsum" . Build::FIELD_DELIMITER .
             "X-WR-RELCALID;LANGUAGE=ES:1232131231321" . Build::FIELD_DELIMITER .
+            "X-WR-TIMEZONE;LANGUAGE=ES:America/Costa_Rica" . Build::FIELD_DELIMITER .
             "END:VCALENDAR"  . Build::FIELD_DELIMITER;
 
         $this->assertEquals($generated_content, $content_test);

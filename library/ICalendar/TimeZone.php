@@ -102,6 +102,20 @@ class TimeZone
     }
 
     /**
+     * Get any class attribute
+     * @param  string $attribute
+     * @return mixed
+     */
+    public function __get($attribute)
+    {
+        if (!isset($this->{$attribute})) {
+            Error::set(ERROR::ERROR_INVALID_PROPERTY, [$attribute], Error::ERROR);
+        }
+
+        return $this->{$attribute};
+    }
+
+    /**
      * Build a new calendar vtimezone string
      * @return vtimezone formatted string
      */

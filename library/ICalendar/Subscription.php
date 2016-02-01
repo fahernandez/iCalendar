@@ -37,6 +37,7 @@ class Subscription
     const CAL_DESC = 'cal_desc';
     const RELCAID = 'relcaid';
     const TIME_ZONE = 'time_zone';
+    const TZID = 'tzid';
 
     /**
      * VCalendar mime type
@@ -118,7 +119,9 @@ class Subscription
             self::LANGUAGE => $this->language,
             self::CAL_NAME => $this->cal_name,
             self::CAL_DESC => $this->cal_desc,
-            self::RELCAID => $this->relcaid
+            self::RELCAID => $this->relcaid,
+            self::RELCAID => $this->relcaid,
+            self::TZID => $this->time_zone->tzid
         ]);
     }
 
