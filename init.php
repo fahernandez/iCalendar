@@ -56,8 +56,8 @@ $aws = new AwsS3(array(
         // Bootstrap the configuration file with AWS specific features
         'includes' => array('_aws'),
         'credentials' => array(
-            'key'    => 'AKIAICNATEG4LN2GIHUQ',
-            'secret' => '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'
+            'key'    => 'Not handle',
+            'secret' => 'Not handle'
         ),
         'region' => 'us-west-2'
     ), 'calendar.dev.subscription');
