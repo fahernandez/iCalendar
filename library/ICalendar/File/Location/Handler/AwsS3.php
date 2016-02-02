@@ -105,11 +105,23 @@ class AwsS3 implements IHandler
      * Load a file aws into a location where it can be handled
      * @param  string $public_location
      * @param  string $file_path_directory
-     * @return string
+     * @return string file path where the object was saved
      */
     public function load($public_location, $file_path_directory)
     {
+        $file_path = $file_path_directory . '/' . basename($public_location);
+        try {
+            // Delete file.
+            $result = $this->s3_client->getObject(array(
+                'Bucket' => $this->bucket,
+                'Key'    => basename($public_location),
+                'SaveAs' => $file_path
+            ));
+        } catch (S3Exception $error) {
+            Error::set($error->getMessage(), [], Error::ERROR);
+        }
 
+        return $file_path;
     }
 
 }

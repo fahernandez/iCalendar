@@ -62,6 +62,9 @@ class FileTest extends PHPUnit_Framework_TestCase
      * @covers ICalendar\Util\File::delete
      * @covers ICalendar\Util\File::open_handler
      * @covers ICalendar\Util\File::get_real_path
+     * @covers ICalendar\Util\File::set_tmp_directory
+     * @covers ICalendar\Util\File::get_file_path
+     * @covers ICalendar\Util\File::get_tmp_directory
      * @return void
      */
     public function test_save()
@@ -75,7 +78,10 @@ class FileTest extends PHPUnit_Framework_TestCase
             'test'
         );
 
-        $this->assertEquals($file_path, 'vfs://root/test.ics');
+        $this->assertEquals(
+            $file->get_file_path(),
+            $file->get_tmp_directory() . '/test.ics'
+        );
     }
 
 }

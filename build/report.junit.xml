@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="iCalendar Test Suite" tests="12" assertions="12" failures="0" errors="0" time="0.155284">
-    <testsuite name="BuildTest" file="/srv/tests/ICalendar/BuildTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.020264">
-      <testcase name="test_build_vcalendar" class="BuildTest" file="/srv/tests/ICalendar/BuildTest.php" line="34" assertions="1" time="0.011211"/>
-      <testcase name="test_build_vtimezone" class="BuildTest" file="/srv/tests/ICalendar/BuildTest.php" line="67" assertions="1" time="0.009053"/>
+  <testsuite name="iCalendar Test Suite" tests="12" assertions="12" failures="0" errors="0" time="0.145686">
+    <testsuite name="BuildTest" file="/srv/tests/ICalendar/BuildTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.021992">
+      <testcase name="test_build_vcalendar" class="BuildTest" file="/srv/tests/ICalendar/BuildTest.php" line="34" assertions="1" time="0.012526"/>
+      <testcase name="test_build_vtimezone" class="BuildTest" file="/srv/tests/ICalendar/BuildTest.php" line="67" assertions="1" time="0.009466"/>
     </testsuite>
-    <testsuite name="ErrorTest" file="/srv/tests/ICalendar/ErrorTest.php" tests="1" assertions="0" failures="0" errors="0" time="0.002768">
-      <testcase name="test_set_error" class="ErrorTest" file="/srv/tests/ICalendar/ErrorTest.php" line="61" assertions="0" time="0.002768"/>
+    <testsuite name="ErrorTest" file="/srv/tests/ICalendar/ErrorTest.php" tests="1" assertions="0" failures="0" errors="0" time="0.001986">
+      <testcase name="test_set_error" class="ErrorTest" file="/srv/tests/ICalendar/ErrorTest.php" line="61" assertions="0" time="0.001986"/>
     </testsuite>
-    <testsuite name="FileTest" file="/srv/tests/ICalendar/FileTest.php" tests="2" assertions="3" failures="0" errors="0" time="0.031505">
-      <testcase name="test_open" class="FileTest" file="/srv/tests/ICalendar/FileTest.php" line="43" assertions="2" time="0.019589"/>
-      <testcase name="test_save" class="FileTest" file="/srv/tests/ICalendar/FileTest.php" line="67" assertions="1" time="0.011916"/>
+    <testsuite name="FileTest" file="/srv/tests/ICalendar/FileTest.php" tests="2" assertions="3" failures="0" errors="0" time="0.022291">
+      <testcase name="test_open" class="FileTest" file="/srv/tests/ICalendar/FileTest.php" line="43" assertions="2" time="0.013628"/>
+      <testcase name="test_save" class="FileTest" file="/srv/tests/ICalendar/FileTest.php" line="70" assertions="1" time="0.008663"/>
     </testsuite>
-    <testsuite name="LanguageTest" file="/srv/tests/ICalendar/LanguageTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.003287">
-      <testcase name="test_exists" class="LanguageTest" file="/srv/tests/ICalendar/LanguageTest.php" line="29" assertions="1" time="0.003287"/>
+    <testsuite name="LanguageTest" file="/srv/tests/ICalendar/LanguageTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.002247">
+      <testcase name="test_exists" class="LanguageTest" file="/srv/tests/ICalendar/LanguageTest.php" line="29" assertions="1" time="0.002247"/>
     </testsuite>
-    <testsuite name="PathTest" file="/srv/tests/ICalendar/PathTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.018789">
-      <testcase name="test_create_path" class="PathTest" file="/srv/tests/ICalendar/PathTest.php" line="37" assertions="1" time="0.012906"/>
-      <testcase name="test_delete_file" class="PathTest" file="/srv/tests/ICalendar/PathTest.php" line="56" assertions="1" time="0.005883"/>
+    <testsuite name="PathTest" file="/srv/tests/ICalendar/PathTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.013926">
+      <testcase name="test_create_path" class="PathTest" file="/srv/tests/ICalendar/PathTest.php" line="37" assertions="1" time="0.008905"/>
+      <testcase name="test_delete_file" class="PathTest" file="/srv/tests/ICalendar/PathTest.php" line="56" assertions="1" time="0.005021"/>
     </testsuite>
-    <testsuite name="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" tests="3" assertions="3" failures="0" errors="0" time="0.070691">
-      <testcase name="test_create_instance_aws" class="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" line="62" assertions="1" time="0.020966"/>
-      <testcase name="test_build_aws" class="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" line="81" assertions="1" time="0.020123"/>
-      <testcase name="test_create_aws" class="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" line="118" assertions="1" time="0.029602"/>
+    <testsuite name="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" tests="3" assertions="3" failures="0" errors="0" time="0.074307">
+      <testcase name="test_create_instance_aws" class="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" line="69" assertions="1" time="0.019401"/>
+      <testcase name="test_build_aws" class="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" line="88" assertions="1" time="0.013340"/>
+      <testcase name="test_create_aws" class="SubscriptionTest" file="/srv/tests/ICalendar/SubscriptionTest.php" line="127" assertions="1" time="0.041566"/>
     </testsuite>
-    <testsuite name="TimeZoneTest" file="/srv/tests/ICalendar/TimeZoneTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.007980">
-      <testcase name="test_build_time_zone" class="TimeZoneTest" file="/srv/tests/ICalendar/TimeZoneTest.php" line="39" assertions="1" time="0.007980"/>
+    <testsuite name="TimeZoneTest" file="/srv/tests/ICalendar/TimeZoneTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.008938">
+      <testcase name="test_build_time_zone" class="TimeZoneTest" file="/srv/tests/ICalendar/TimeZoneTest.php" line="39" assertions="1" time="0.008938"/>
     </testsuite>
   </testsuite>
 </testsuites>

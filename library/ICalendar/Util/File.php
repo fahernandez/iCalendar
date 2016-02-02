@@ -160,6 +160,15 @@ class File
     }
 
     /**
+     * Get the tmp directory when the files are saved
+     * @return string
+     */
+    public function get_tmp_directory()
+    {
+        return $this->tmp_directory;
+    }
+
+    /**
      * Overrides the default tmp directory on file library
      * @param string $tmp_directory
      */

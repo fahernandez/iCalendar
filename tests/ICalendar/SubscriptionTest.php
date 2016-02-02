@@ -21,6 +21,8 @@ use ICalendar\Subscription;
 use ICalendar\TimeZone;
 use \ICalendar\File\Template\Build;
 use \ICalendar\Util\Language;
+use \org\bovigo\vfs\vfsStream;
+use \org\bovigo\vfs\vfsStreamWrapper;
 
 class SubscriptionTest extends PHPUnit_Framework_TestCase
 {
@@ -34,6 +36,8 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
      */
     public function setup()
     {
+        $this->root = vfsstream::setup('root');
+
         $this->awss3 = $this->getMockBuilder('ICalendar\File\Location\Handler\AwsS3')
             ->disableOriginalConstructor()
             ->getMock();
@@ -43,6 +47,9 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
 
         $this->awss3->method('delete')
              ->willReturn(true);
+
+        $this->awss3->method('load')
+             ->willReturn('vfs://root/56aaa297a8019.ics');
 
         $this->time_zone = (new TimeZone())
             ->set_tzid('America/Costa_Rica')
@@ -111,13 +118,18 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
      * Test Create a new calendar subscription
      * @depends test_create_instance_aws
      * @covers ICalendar\Subscription::create
+     * @covers ICalendar\Subscription::load
      * @covers ICalendar\Subscription::get_public_location
      * @covers ICalendar\Subscription::insert_time_zone
+     * @covers ICalendar\Subscription::set_tmp_directory
      * @return void
      */
     public function test_create_aws()
     {
         $subscription = new Subscription($this->awss3);
+
+        vfsstream::newFile('56aaa297a8019.ics')
+            ->at(vfsStreamWrapper::getRoot());
 
         $subscription
             ->set_language(Language::SPANISH)
@@ -125,6 +137,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             ->set_cal_name('Calendario Huli Practice')
             ->set_cal_desc('Lorem itsum Lorem itsum')
             ->set_relcaid('1232131231321')
+            ->set_tmp_directory(vfsstream::url('root'))
             ->set_time_zone($this->time_zone)
             ->create();
 
@@ -132,7 +145,6 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             $subscription->get_public_location(),
             "https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics"
         );
-
     }
 
 

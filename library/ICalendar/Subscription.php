@@ -95,6 +95,12 @@ class Subscription
     private $public_location;
 
     /**
+     * File object handler of the loaded ics calendar file
+     * @var File
+     */
+    private $ics_file;
+
+    /**
      * Create a new Subscription instance
      * @codeCoverageIgnore
      * @param IHandler $file_location_handler
@@ -157,7 +163,19 @@ class Subscription
     public function load($public_location)
     {
         $this->public_location = $public_location;
-        $this->file_location_handler->load($this->public_location, 'asd');
+
+        $this->ics_file = new file();
+        $this->ics_file->delete_file_on_destroy()
+            ->set_tmp_directory($this->tmp_directory);
+
+        $file_path = $this->file_location_handler->load(
+            $this->public_location,
+            $this->ics_file->get_tmp_directory()
+        );
+
+        $this->ics_file->open($file_path);
+
+        return $this;
     }
 
     /**
