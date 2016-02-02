@@ -36,17 +36,10 @@ class File
     const C_PLUS = 'c+';
 
     /**
-     * Errors
-     */
-    const ERROR_NO_READABLE = "File %s can't be read";
-    const ERROR_READABLE = "File %s exist on tmp location, please delete it first.";
-    const ERROR_NO_OPENED = "File %s has to be opened first";
-
-    /**
      * Temporary file location
      */
-    const TEMP_FILE_LOCATION = "%s/../../../tmp/%s.ics";
-    const TEMP_LOCATION = "/../../../tmp";
+    const DEFAULT_TMP_DIRECTORY = "/../../../tmp";
+    const FILE_LOCATION_FORMAT = "%s/%s.ics";
 
     /**
      * Class attributes
@@ -55,19 +48,19 @@ class File
     private $file_open_mode;
     private $file_handler;
     private $delete_file = false;
+    private $tmp_directory;
 
     /**
      * Create the file instance
-     * @param string $file_path
-     * @param string $file_open_mode file open mode
      */
     public function __construct()
     {
-        // No construct implementation needed
+        $this->tmp_directory = __DIR__ . self::DEFAULT_TMP_DIRECTORY;
     }
 
     /**
      * Close the file
+     * (optional) Destroy the opened file
      */
     public function __destruct()
     {
@@ -89,7 +82,7 @@ class File
         $this->file_open_mode = self::R_PLUS;
 
         if (!is_readable($this->file_path)) {
-            Error::set(self::ERROR_NO_READABLE, [$this->file_path], Error::ERROR);
+            Error::set(Error::ERROR_NO_READABLE, [$this->file_path], Error::ERROR);
         }
 
         $this->open_handler();
@@ -100,23 +93,22 @@ class File
      * Create a file an save the string content into the file
      * @param  string $content string
      * @param  string $name    string
-     * @param  string $file_path    string
      * @return string file path where the file can be found
      */
-    public function save($content, $name, $file_path = null)
+    public function save($content, $name)
     {
-        if (empty($file_path)) {
-            (new Path())->create_path(__DIR__ . self::TEMP_LOCATION);
-        }
+        (new Path())->create_path($this->tmp_directory);
 
-        $this->file_path = !empty($file_path)
-            ? $file_path . $name
-            : sprintf(self::TEMP_FILE_LOCATION, __DIR__, $name);
+        $this->file_path = sprintf(
+            self::FILE_LOCATION_FORMAT,
+            $this->tmp_directory,
+            $name
+        );
 
         $this->file_open_mode = self::W_PLUS;
 
         if (is_readable($this->file_path)) {
-            Error::set(self::ERROR_READABLE, [$this->file_path], Error::ERROR);
+            Error::set(Error::ERROR_READABLE, [$this->file_path], Error::ERROR);
         }
 
         $this->open_handler();
@@ -152,10 +144,38 @@ class File
     public function get_all_content()
     {
         if (empty($this->file_handler)) {
-            Error::set(self::ERROR_NO_OPENED, [$this->file_path], Error::ERROR);
+            Error::set(Error::ERROR_NO_OPENED, [$this->file_path], Error::ERROR);
         }
 
         return fread($this->file_handler, filesize($this->file_path));
+    }
+
+    /**
+     * Get file location
+     * @return string location file
+     */
+    public function get_file_path()
+    {
+        return $this->file_path;
+    }
+
+    /**
+     * Overrides the default tmp directory on file library
+     * @param string $tmp_directory
+     */
+    public function set_tmp_directory($tmp_directory)
+    {
+        if (!empty($tmp_directory) && !file_exists($tmp_directory)) {
+            Error::set(Error::ERROR_DIR_NO_READABLE, [$tmp_directory], Error::ERROR);
+        }
+
+        if (empty($tmp_directory)) {
+            return $this;
+        }
+
+        $this->tmp_directory = rtrim($tmp_directory, '/');
+
+        return $this;
     }
 
     /**

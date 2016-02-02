@@ -31,6 +31,10 @@ class Error
     const ERROR_INVALID_ARGUMENT = 'Attribute %s is invalid for %s, please refer to RFC 2445';
     const ERROR_INVALID_BUCKET = 'Aws S3 bucket %s does not exists';
     const ERROR_INVALID_PROPERTY = 'Undefined property via __get():%s';
+    const ERROR_NO_READABLE = "File %s can't be read";
+    const ERROR_READABLE = "File %s exist on tmp location, please delete it first.";
+    const ERROR_NO_OPENED = "File %s has to be opened first";
+    const ERROR_DIR_NO_READABLE = 'Directory %s cannot be access';
 
     /**
      * Error message format

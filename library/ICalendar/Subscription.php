@@ -40,15 +40,15 @@ class Subscription
     const TZID = 'tzid';
 
     /**
-     * VCalendar mime type
-     */
-    const CONTENT_TYPE = 'text/calendar';
-
-    /**
      * Saves/load files to its public location
      * @var IHandler
      */
     private $file_location_handler;
+
+    /**
+     * Location where tmp location files will be saved
+     */
+    private $tmp_directory;
 
     /**
      * This property specifies the identifier for the product that created the
@@ -97,6 +97,7 @@ class Subscription
     /**
      * Create a new Subscription instance
      * @codeCoverageIgnore
+     * @param IHandler $file_location_handler
      */
     public function __construct(IHandler $file_location_handler)
     {
@@ -137,14 +138,11 @@ class Subscription
         $vcalendar = $this->insert_time_zone($vcalendar, $vtimezone);
 
         $file = new file();
-        $tmp_location = $file
-            ->delete_file_on_destroy()
+        $file->delete_file_on_destroy()
+            ->set_tmp_directory($this->tmp_directory)
             ->save($vcalendar, $this->relcaid);
 
-        $this->public_location = $this->file_location_handler->save(
-            $tmp_location,
-            self::CONTENT_TYPE
-        );
+        $this->public_location = $this->file_location_handler->save($file);
 
         $this->load($this->public_location);
 
@@ -260,6 +258,18 @@ class Subscription
         array_push($separated_content, $end_vcalendar);
 
         return implode($separated_content);
+    }
+
+    /**
+     * Change the default location of the temporary created files
+     * On this location will be saved(and then deleted) the subscription files
+     * @param string $tmp_directory
+     */
+    public function set_tmp_directory($tmp_directory)
+    {
+        $this->tmp_directory = $tmp_directory;
+
+        return $this;
     }
 
     /**

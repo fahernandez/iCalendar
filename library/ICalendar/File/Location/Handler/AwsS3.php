@@ -23,6 +23,7 @@ use ICalendar\File\Location\IHandler;
 use ICalendar\Util\Error;
 use \Aws\S3\S3Client;
 use \Aws\S3\Exception\S3Exception;
+use ICalendar\Util\File;
 
 /**
  * @codeCoverageIgnore
@@ -57,21 +58,24 @@ class AwsS3 implements IHandler
 
     /**
      * Save a file into a S3 location
-     * @return string public file location
+     * @return File file that will be saved
      */
-    public function save($file_path, $content_type)
+    public function save(File $file)
     {
+        $file_path = $file->get_file_path();
         try {
             // Upload data.
             $result = $this->s3_client->putObject(array(
                 'Bucket'       => $this->bucket,
                 'Key'          => basename($file_path),
                 'SourceFile'   => $file_path,
-                'ContentType'  => $content_type,
+                'ContentType'  => mime_content_type($file_path),
                 'StorageClass' => 'STANDARD',
                 'ACL'          => 'public-read',
+                'ServerSideEncryption' => 'AES256'
             ));
         } catch (S3Exception $error) {
+            $file->__destruct();
             Error::set($error->getMessage(), [], Error::ERROR);
         }
 

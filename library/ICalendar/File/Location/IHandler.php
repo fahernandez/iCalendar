@@ -20,6 +20,8 @@
 
 namespace ICalendar\File\Location;
 
+use ICalendar\Util\File;
+
 /**
  * @codeCoverageIgnore
  */
@@ -29,12 +31,10 @@ interface IHandler
     /**
      * Save a file into a public location. After the path is saved on the public
      * location this file is deleted.
-     * @param  string $file_path path where the file will be taken to be copied
-     * to its public location
-     * @param  string $file content type
+     * @param  string $file file that will be copied to the public location
      * @return string public location file
      */
-    public function save($file_path, $content_type);
+    public function save(File $file);
 
     /**
      * Delete a file in a public location

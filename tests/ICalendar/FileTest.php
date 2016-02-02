@@ -67,14 +67,15 @@ class FileTest extends PHPUnit_Framework_TestCase
     public function test_save()
     {
         $file = new File();
-        $file->delete_file_on_destroy();
+        $file->delete_file_on_destroy()
+            ->set_tmp_directory(vfsstream::url('root'));
+
         $file_path = $file->save(
             'Hello world',
-            '/test.txt',
-            vfsstream::url('root')
+            'test'
         );
 
-        $this->assertEquals($file_path, 'vfs://root/test.txt');
+        $this->assertEquals($file_path, 'vfs://root/test.ics');
     }
 
 }
