@@ -1,8 +1,8 @@
 <?php
 /**
- * ICalendar event handle library
+ * ICalendar Status library test
  *
- * Create a new vevent instance(based RFC 2445)
+ * Test icalendar status functionality
  *
  * PHP 5
  *
@@ -17,10 +17,17 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-namespace ICalendar;
+use \ICalendar\Util\Status;
 
-class Event
+class StatusTest extends PHPUnit_Framework_TestCase
 {
-
-
+    /**
+     * Test status exist functionality
+     * @covers ICalendar\Util\Status::exists
+     * @return void
+     */
+    public function test_exists()
+    {
+        $this->assertTrue(Status::exists(Status::COMPLETED));
+    }
 }

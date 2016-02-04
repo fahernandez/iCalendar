@@ -7,4 +7,5 @@ X-WR-CALNAME;LANGUAGE={language}:{cal_name}
 X-WR-CALDESC;LANGUAGE={language}:{cal_desc}
 X-WR-RELCALID;LANGUAGE={language}:{relcaid}
 X-WR-TIMEZONE;LANGUAGE={language}:{tzid}
+X-DTSTAMP;TYPE=DATE-TIME:{x_dtstamp}
 END:VCALENDAR

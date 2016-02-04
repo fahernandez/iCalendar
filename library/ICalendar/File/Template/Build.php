@@ -23,13 +23,6 @@ use ICalendar\Util\File;
 
 class Build
 {
-
-    /**
-     * Subscription template
-     */
-    const VCALENDAR_TEMPLATE = '/VCalendar.txt';
-    const VTIMEZONE_TEMPLATE = '/VTimeZone.txt';
-
     /**
      * New line field delimiter
      */
@@ -51,7 +44,7 @@ class Build
     public function __construct($template)
     {
         $this->file_template = new File();
-        $this->file_template->open(__DIR__ . $template);
+        $this->file_template->open(__DIR__ . '/' .$template);
     }
 
     /**
@@ -67,7 +60,7 @@ class Build
         // Overrides parameters on the template
         $processed_content = $this->process_content($content, $attributes);
 
-        // Format template according to the requierements of RFC 2445
+        // Format template according to the requierements of RFC 5545
         return $this->format_content($processed_content);
     }
 
@@ -87,7 +80,7 @@ class Build
     }
 
     /**
-     * Format the template according with the rules defined on RFC 2445
+     * Format the template according with the rules defined on RFC 5545
      *
      * Lines of text SHOULD NOT be longer than 75 octets, excluding the line
      * break. Long content lines SHOULD be split into a multiple line

@@ -1,6 +1,6 @@
 {
     "name": "iCalendar",
-    "description": "ICalendar objects manipulation based on RFC 2445",
+    "description": "ICalendar objects manipulation based on RFC 5545",
     "keywords": [
         "iCalendar"
     ],

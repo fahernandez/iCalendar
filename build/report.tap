@@ -7,8 +7,9 @@ ok 5 - FileTest::test_save
 ok 6 - LanguageTest::test_exists
 ok 7 - PathTest::test_create_path
 ok 8 - PathTest::test_delete_file
-ok 9 - SubscriptionTest::test_create_instance_aws
-ok 10 - SubscriptionTest::test_build_aws
-ok 11 - SubscriptionTest::test_create_aws
-ok 12 - TimeZoneTest::test_build_time_zone
-1..12
+ok 9 - StatusTest::test_exists
+ok 10 - SubscriptionTest::test_create_instance_aws
+ok 11 - SubscriptionTest::test_build_aws
+ok 12 - SubscriptionTest::test_create_aws
+ok 13 - TimeZoneTest::test_build_time_zone
+1..13

@@ -2,7 +2,7 @@
 /**
  * ICalendar time zone file
  *
- * Create a new time zone instance(based RFC 2445)
+ * Create a new time zone instance(based RFC 5545)
  *
  * PHP 5
  *
@@ -23,8 +23,13 @@ use ICalendar\Util\Error;
 use ICalendar\File\Template\Build;
 use DateTime;
 
-class TimeZone
+final class TimeZone extends ACalendar
 {
+    /**
+     * VCalendar object template
+     */
+    const VTEMPLATE = 'VTimeZone.txt';
+
     /**
      * Calendar time zone parameters
      */
@@ -39,7 +44,7 @@ class TimeZone
     /**
      * VTimeZone dtstart attribute date time format
      */
-    const DTSTART_FORMAT = 'Ymd\THis';
+    const DATETIME_FORMAT = 'Ymd\THis';
 
     /**
      * VTimeZone time offeset format validator
@@ -48,50 +53,67 @@ class TimeZone
 
     /**
      * This property specifies the text value that uniquely identifies the
-     * "VTIMEZONE" calendar * component. (RFC 2445)
+     * "VTIMEZONE" calendar * component. (RFC 5545)
      * @var string
      */
-    private $tzid;
+    protected $tzid;
 
     /**
      * This property specifies the offset which is in use prior to this time
-     * zone observance. (RFC 2445)
+     * zone observance. (RFC 5545)
      * @var string
      */
-    private $offset_from;
+    protected $offset_from;
 
     /**
      * This property specifies the offset which is in use in this time zone
-     * observance.(RFC 2445)
+     * observance.(RFC 5545)
      * @var string
      */
-    private $offset_to;
+    protected $offset_to;
 
     /**
      * This property specifies the customary designation for a time zone
-     * description(RFC 2445)
+     * description(RFC 5545)
      * @var string
      */
-    private $standard_tzname;
+    protected $standard_tzname;
 
     /**
      * This property specifies the customary designation for a time zone
-     * description(RFC 2445)
+     * description(RFC 5545)
      * @var string
      */
-    private $daylight_tzname;
+    protected $daylight_tzname;
 
     /**
-     * This property specifies when the calendar component begins(RFC 2445)
+     * This property specifies when the calendar component begins(RFC 5545)
      * @var string
      */
-    private $daylight_dtstart;
+    protected $daylight_dtstart;
 
     /**
-     * This property specifies when the calendar component begins(RFC 2445)
+     * This property specifies when the calendar component begins(RFC 5545)
      * @var string
      */
-    private $standard_dtstart;
+    protected $standard_dtstart;
+
+    /**
+     * VTimeZone attributes mapping
+     * @var array
+     *      The key represent the name of the attribute on the class
+     *      The value represents an regular expresion to get the value
+     *      of the attribute on the vcalendar text object
+     */
+    protected static $object_attributes = [
+        self::TZID => 'TZID',
+        self::STANDARD_DTSTART => 'DTSTART',
+        self::OFFSET_FROM => 'TZOFFSETFROM',
+        self::OFFSET_TO => 'TZOFFSETTO',
+        self::STANDARD_TZNAME => 'TZNAME',
+        self::DAYLIGHT_DTSTART => 'DTSTART',
+        self::DAYLIGHT_TZNAME => 'TZNAME'
+    ];
 
     /**
      * Create a new Subscription instance
@@ -99,42 +121,6 @@ class TimeZone
     public function __construct()
     {
         // No value on construct is needed
-    }
-
-    /**
-     * Get any class attribute
-     * @param  string $attribute
-     * @return mixed
-     */
-    public function __get($attribute)
-    {
-        if (!isset($this->{$attribute})) {
-            Error::set(ERROR::ERROR_INVALID_PROPERTY, [$attribute], Error::ERROR);
-        }
-
-        return $this->{$attribute};
-    }
-
-    /**
-     * Build a new calendar vtimezone string
-     * @return vtimezone formatted string
-     */
-    public function build()
-    {
-        $this->validate_time_zone_attributes();
-
-        // Construct a vTimezone object based on the templated
-        return (new Build(
-            Build::VTIMEZONE_TEMPLATE
-        ))->build([
-            self::TZID => $this->tzid,
-            self::STANDARD_DTSTART => $this->standard_dtstart,
-            self::OFFSET_FROM => $this->offset_from,
-            self::OFFSET_TO => $this->offset_to,
-            self::STANDARD_TZNAME => $this->standard_tzname,
-            self::DAYLIGHT_DTSTART => $this->daylight_dtstart,
-            self::DAYLIGHT_TZNAME => $this->daylight_tzname
-        ]);
     }
 
     /**
@@ -215,7 +201,7 @@ class TimeZone
      */
     public function set_standard_dtstart(DateTime $standard_dtstart)
     {
-        $this->standard_dtstart = $standard_dtstart->format(self::DTSTART_FORMAT);
+        $this->standard_dtstart = $standard_dtstart->format(self::DATETIME_FORMAT);
 
         return $this;
     }
@@ -226,7 +212,7 @@ class TimeZone
      */
     public function set_daylight_dtstart(DateTime $daylight_dtstart)
     {
-        $this->daylight_dtstart = $daylight_dtstart->format(self::DTSTART_FORMAT);
+        $this->daylight_dtstart = $daylight_dtstart->format(self::DATETIME_FORMAT);
 
         return $this;
     }
@@ -235,34 +221,9 @@ class TimeZone
      * Validate the attributes related to the Vtimezone object
      * @return void
      */
-    private function validate_time_zone_attributes()
+    protected function validate_attributes()
     {
-        if (!isset($this->tzid)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::TZID], Error::ERROR);
-        }
-
-        if (!isset($this->standard_dtstart)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::STANDARD_DTSTART], Error::ERROR);
-        }
-
-        if (!isset($this->offset_from)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::OFFSET_FROM], Error::ERROR);
-        }
-
-        if (!isset($this->offset_to)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::OFFSET_TO], Error::ERROR);
-        }
-
-        if (!isset($this->standard_tzname)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::STANDARD_TZNAME], Error::ERROR);
-        }
-        if (!isset($this->daylight_dtstart)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::DAYLIGHT_DTSTART], Error::ERROR);
-        }
-
-        if (!isset($this->daylight_tzname)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::DAYLIGHT_TZNAME], Error::ERROR);
-        }
+        parent::validate_attributes();
     }
 
 

@@ -70,8 +70,9 @@ class AwsS3 implements IHandler
                 'Key'          => basename($file_path),
                 'SourceFile'   => $file_path,
                 'ContentType'  => mime_content_type($file_path),
-                'StorageClass' => 'STANDARD',
                 'ACL'          => 'public-read',
+                'ContentEncoding' => 'utf-8',
+                'StorageClass' => 'STANDARD',
                 'ServerSideEncryption' => 'AES256'
             ));
         } catch (S3Exception $error) {

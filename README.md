@@ -7,7 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-ICalendar objects manipulation based on RFC 2445. This libraries let the user create, parse, and manipulate(create, update, delete) events on a ICalendar object.
+ICalendar objects manipulation based on RFC 5545. This libraries let the user create, parse, and manipulate(create, update, delete) events on a ICalendar object.
 
 ## Install
 

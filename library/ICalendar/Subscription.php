@@ -2,7 +2,7 @@
 /**
  * ICalendar subscription file
  *
- * Init a new calendar subscription instance(based RFC 2445)
+ * Init a new calendar subscription instance(based RFC 5545)
  *
  * PHP 5
  *
@@ -25,9 +25,16 @@ use ICalendar\Util\File;
 use ICalendar\Util\Language;
 use ICalendar\File\Template\Build;
 use ICalendar\TimeZone as VTimeZone;
+use DateTime;
 
-class Subscription
+final class Subscription extends ACalendar
 {
+
+    /**
+     * VCalendar object template
+     */
+    const VTEMPLATE = 'VCalendar.txt';
+
     /**
      * Calendar subscription parameters
      */
@@ -38,67 +45,98 @@ class Subscription
     const RELCAID = 'relcaid';
     const TIME_ZONE = 'time_zone';
     const TZID = 'tzid';
+    const X_DTSTAMP = 'x_dtstamp';
 
     /**
      * Saves/load files to its public location
      * @var IHandler
      */
-    private $file_location_handler;
+    protected $file_location_handler;
 
     /**
      * Location where tmp location files will be saved
      */
-    private $tmp_directory;
+    protected $tmp_directory;
 
     /**
      * This property specifies the identifier for the product that created the
-     * iCalendar object(RFC 2445)
+     * iCalendar object(RFC 5545)
      * @var string
      */
-    private $prodid;
+    protected $prodid;
 
     /**
      * To specify the language for text values in a property or property
-     * parameter (RFC 2445)
+     * parameter (RFC 5545)
      * @var string
      */
-    private $language;
+    protected $language;
 
     /**
      * To specify the name of the calendar
      * @var string
      */
-    private $cal_name;
+    protected $cal_name;
 
     /**
      * To specify a description for the calendar
      * @var string
      */
-    private $cal_desc;
+    protected $cal_desc;
 
     /**
      * To specify unique name for the calendar
      * @var string
      */
-    private $relcaid;
+    protected $relcaid;
 
     /**
      * Time Zone object for the subscription
      * @var VTimeZone
      */
-    private $time_zone;
+    protected $time_zone;
 
     /**
      * Public location where the file where saved
      * @var string
      */
-    private $public_location;
+    protected $public_location;
 
     /**
      * File object handler of the loaded ics calendar file
      * @var File
      */
-    private $ics_file;
+    protected $ics_file;
+
+    /**
+     * Custom icalendar value to save when the calendar was created
+     * @var string formatted datetime
+     */
+    protected $x_dtstamp;
+
+    /**
+     * This property specifies the text value that uniquely identifies the
+     * "VTIMEZONE" calendar * component. (RFC 5545)
+     * @var string
+     */
+    protected $tzid;
+
+    /**
+     * VCalendar attributes mapping
+     * @var array
+     *      The key represent the name of the attribute on the class
+     *      The value represents an regular expresion to get the value
+     *      of the attribute on the vcalendar text object
+     */
+    protected static $object_attributes = [
+        self::PRODID => 'PRODID',
+        self::LANGUAGE => 'LANGUAGE',
+        self::CAL_NAME => 'X-WR-CALNAME',
+        self::CAL_DESC => 'X-WR-CALDESC',
+        self::RELCAID => 'X-WR-RELCALID',
+        self::TZID => 'X-WR-TIMEZONE',
+        self::X_DTSTAMP => 'X-DTSTAMP'
+    ];
 
     /**
      * Create a new Subscription instance
@@ -108,28 +146,6 @@ class Subscription
     public function __construct(IHandler $file_location_handler)
     {
         $this->file_location_handler = $file_location_handler;
-    }
-
-    /**
-     * Build a new vcalendar subscription string
-     * @return vcalendar formatted string
-     */
-    public function build()
-    {
-        $this->validate_calendar_attributes();
-
-        // Construct a vcalendar object based on the templated
-        return (new Build(
-            Build::VCALENDAR_TEMPLATE
-        ))->build([
-            self::PRODID => $this->prodid,
-            self::LANGUAGE => $this->language,
-            self::CAL_NAME => $this->cal_name,
-            self::CAL_DESC => $this->cal_desc,
-            self::RELCAID => $this->relcaid,
-            self::RELCAID => $this->relcaid,
-            self::TZID => $this->time_zone->tzid
-        ]);
     }
 
     /**
@@ -179,15 +195,6 @@ class Subscription
     }
 
     /**
-     * Get the public location where the file was saved
-     * @return string
-     */
-    public function get_public_location()
-    {
-        return $this->public_location;
-    }
-
-    /**
      * Set prodid parameter
      * @param string $prodid
      */
@@ -207,7 +214,7 @@ class Subscription
         if (!Language::exists($language)) {
             Error::set(
                 Error::ERROR_INVALID_ARGUMENT,
-                [$language, 'language'],
+                [$language, self::LANGUAGE],
                 Error::ERROR
             );
         }
@@ -262,6 +269,29 @@ class Subscription
     }
 
     /**
+     * Change the default location of the temporary created files
+     * On this location will be saved(and then deleted) the subscription files
+     * @param string $tmp_directory
+     */
+    public function set_tmp_directory($tmp_directory)
+    {
+        $this->tmp_directory = $tmp_directory;
+
+        return $this;
+    }
+
+    /**
+     * Date time when the calendar file was created
+     * @param DateTime $x_dtstamp
+     */
+    public function set_x_dtstamp(DateTime $x_dtstamp)
+    {
+        $this->x_dtstamp = $x_dtstamp->format(VTimeZone::DATETIME_FORMAT);
+
+        return $this;
+    }
+
+    /**
      * Insert the vtimezone into the vcalendar string
      * The vtimezone string will be inserted at the end of the vcalendar string
      * @param  string $vcalendar formatted vcalendar string
@@ -279,42 +309,20 @@ class Subscription
     }
 
     /**
-     * Change the default location of the temporary created files
-     * On this location will be saved(and then deleted) the subscription files
-     * @param string $tmp_directory
-     */
-    public function set_tmp_directory($tmp_directory)
-    {
-        $this->tmp_directory = $tmp_directory;
-
-        return $this;
-    }
-
-    /**
      * Validated that all the attributes needed for the calendar format are set
      * @return void Set an error in case of any the attributes are missing
      */
-    private function validate_calendar_attributes()
+    protected function validate_attributes()
     {
-        if (!isset($this->prodid)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::PRODID], Error::ERROR);
+        if (!isset($this->x_dtstamp)) {
+            $this->x_dtstamp = (new DateTime())->format(VTimeZone::DATETIME_FORMAT);
         }
 
-        if (!isset($this->cal_name)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::CAL_NAME], Error::ERROR);
+        if (isset($this->time_zone)) {
+            $this->tzid = $this->time_zone->tzid;
         }
 
-        if (!isset($this->cal_desc)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::CAL_DESC], Error::ERROR);
-        }
-
-        if (!isset($this->relcaid)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::RELCAID], Error::ERROR);
-        }
-
-        if (!isset($this->time_zone)) {
-            Error::set(Error::ERROR_MISSING_ATTRIBUTE, [self::TIME_ZONE], Error::ERROR);
-        }
+        parent::validate_attributes();
     }
 
 }

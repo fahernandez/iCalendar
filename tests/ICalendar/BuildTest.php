@@ -33,7 +33,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
      */
     public function test_build_vcalendar()
     {
-        $build = new Build(Build::VCALENDAR_TEMPLATE);
+        $build = new Build(Subscription::VTEMPLATE);
         $generated_content = $build->build(array(
             Subscription::PRODID => '@testtest',
             Subscription::LANGUAGE => 'EN',
@@ -41,6 +41,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
             Subscription::CAL_DESC => 'Calendar Test description',
             Subscription::RELCAID => '12312313',
             Subscription::TZID => 'America/Costa_Rica',
+            Subscription::X_DTSTAMP => '20160128T232158'
         ));
         $content_test = "BEGIN:VCALENDAR" . Build::FIELD_DELIMITER .
             "VERSION:2.0" . Build::FIELD_DELIMITER .
@@ -51,6 +52,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
             "X-WR-CALDESC;LANGUAGE=EN:Calendar Test description" . Build::FIELD_DELIMITER .
             "X-WR-RELCALID;LANGUAGE=EN:12312313" . Build::FIELD_DELIMITER .
             "X-WR-TIMEZONE;LANGUAGE=EN:America/Costa_Rica" . Build::FIELD_DELIMITER .
+            "X-DTSTAMP;TYPE=DATE-TIME:20160128T232158" . Build::FIELD_DELIMITER .
             "END:VCALENDAR"  . Build::FIELD_DELIMITER;
 
         $this->assertEquals($generated_content, $content_test);
@@ -66,7 +68,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
      */
     public function test_build_vtimezone()
     {
-        $build = new Build(Build::VTIMEZONE_TEMPLATE);
+        $build = new Build(TimeZone::VTEMPLATE);
         $generated_content = $build->build(array(
             TimeZone::TZID => "America\Costa_Rica",
             TimeZone::STANDARD_DTSTART => '20160128T232158',

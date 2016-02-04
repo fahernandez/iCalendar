@@ -34,7 +34,7 @@ class TimeZoneTest extends PHPUnit_Framework_TestCase
      * @covers ICalendar\TimeZone::set_daylight_tzname
      * @covers ICalendar\TimeZone::set_standard_dtstart
      * @covers ICalendar\TimeZone::set_daylight_dtstart
-     * @covers ICalendar\TimeZone::validate_time_zone_attributes
+     * @covers ICalendar\TimeZone::validate_attributes
      */
     public function test_build_time_zone()
     {

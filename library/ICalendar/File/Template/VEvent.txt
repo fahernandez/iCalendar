@@ -3,13 +3,13 @@ UID:{uid}
 DTSTAMP:{dtstamp}
 CLASS:PUBLIC
 CREATED:{created}
-DESCRIPTION;LANGUAGE=ES:{description}
+DESCRIPTION;LANGUAGE={language}:{description}
 DTSTART;TZID={tzid}:{dtstart}
 DTEND;TZID={tzid}:{dtend}
 LAST-MODIFIED:{last_modified}
-LOCATION;LANGUAGE=ES:{location}
+LOCATION;LANGUAGE={language}:{location}
 SEQUENCE:0
 STATUS:{status}
-SUMMARY;LANGUAGE=ES:{summary}
+SUMMARY;LANGUAGE={language}:{summary}
 TRANSP:OPAQUE
 END:VEVENT

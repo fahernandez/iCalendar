@@ -28,7 +28,7 @@ class Error
      * Errors
      */
     const ERROR_MISSING_ATTRIBUTE = 'Attribute %s is requiered';
-    const ERROR_INVALID_ARGUMENT = 'Attribute %s is invalid for %s, please refer to RFC 2445';
+    const ERROR_INVALID_ARGUMENT = 'Attribute %s is invalid for %s, please refer to RFC 5545';
     const ERROR_INVALID_BUCKET = 'Aws S3 bucket %s does not exists';
     const ERROR_INVALID_PROPERTY = 'Undefined property via __get():%s';
     const ERROR_NO_READABLE = "File %s can't be read";

@@ -82,7 +82,8 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
      * @covers ICalendar\Subscription::set_cal_desc
      * @covers ICalendar\Subscription::set_relcaid
      * @covers ICalendar\Subscription::set_time_zone
-     * @covers ICalendar\Subscription::validate_calendar_attributes
+     * @covers ICalendar\Subscription::set_x_dtstamp
+     * @covers ICalendar\Subscription::validate_attributes
      * @return void
      */
     public function test_build_aws()
@@ -96,6 +97,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             ->set_cal_desc('Lorem itsum Lorem itsum')
             ->set_relcaid('1232131231321')
             ->set_time_zone($this->time_zone)
+            ->set_x_dtstamp(new DateTime('2000-01-01'))
             ->build();
 
         $content_test = "BEGIN:VCALENDAR" . Build::FIELD_DELIMITER .
@@ -107,6 +109,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             "X-WR-CALDESC;LANGUAGE=ES:Lorem itsum Lorem itsum" . Build::FIELD_DELIMITER .
             "X-WR-RELCALID;LANGUAGE=ES:1232131231321" . Build::FIELD_DELIMITER .
             "X-WR-TIMEZONE;LANGUAGE=ES:America/Costa_Rica" . Build::FIELD_DELIMITER .
+            "X-DTSTAMP;TYPE=DATE-TIME:20000101T000000" . Build::FIELD_DELIMITER .
             "END:VCALENDAR"  . Build::FIELD_DELIMITER;
 
         $this->assertEquals($generated_content, $content_test);
@@ -119,7 +122,6 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
      * @depends test_create_instance_aws
      * @covers ICalendar\Subscription::create
      * @covers ICalendar\Subscription::load
-     * @covers ICalendar\Subscription::get_public_location
      * @covers ICalendar\Subscription::insert_time_zone
      * @covers ICalendar\Subscription::set_tmp_directory
      * @return void
@@ -142,7 +144,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             ->create();
 
         $this->assertEquals(
-            $subscription->get_public_location(),
+            $subscription->public_location,
             "https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics"
         );
     }
