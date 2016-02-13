@@ -21,12 +21,20 @@ namespace ICalendar;
 
 use ICalendar\Util\Error;
 use ICalendar\File\Template\Build;
+use ICalendar\Util\File;
 
 /**
  * @codeCoverageIgnore
  */
 abstract class ACalendar
 {
+
+    /**
+     * Available methods to parse the vcalendar content text
+     */
+    const REGEX = 'REGEX';
+    const FREE_TEXT = 'FREE_TEXT';
+
      /**
      * Build a new calendar object string
      * @return vcalendar formatted string
@@ -72,6 +80,17 @@ abstract class ACalendar
                 Error::set(Error::ERROR_MISSING_ATTRIBUTE, [$key], Error::ERROR);
             }
         }
+    }
+
+    /**
+     * Load an object based on the file attributes defined for the vcalendar object
+     * @param  File   $file file handler of the ics calendar file
+     * @return boolean status of the operation
+     */
+    protected function load_from_file(File $file)
+    {
+        $string = $file->get_line_content(static::OPENING_TAG, static::CLOSING_TAG);
+        return true;
     }
 
 }

@@ -36,6 +36,12 @@ final class Subscription extends ACalendar
     const VTEMPLATE = 'VCalendar.txt';
 
     /**
+     * VCalendar Opening and closing tag
+     */
+    const OPENING_TAG = 'BEGIN:VCALENDAR';
+    const CLOSING_TAG = 'X-END=TRUE';
+
+    /**
      * Calendar subscription parameters
      */
     const PRODID = 'prodid';
@@ -129,13 +135,13 @@ final class Subscription extends ACalendar
      *      of the attribute on the vcalendar text object
      */
     protected static $object_attributes = [
-        self::PRODID => 'PRODID',
-        self::LANGUAGE => 'LANGUAGE',
-        self::CAL_NAME => 'X-WR-CALNAME',
-        self::CAL_DESC => 'X-WR-CALDESC',
-        self::RELCAID => 'X-WR-RELCALID',
-        self::TZID => 'X-WR-TIMEZONE',
-        self::X_DTSTAMP => 'X-DTSTAMP'
+        self::PRODID => ["^PRODID:-//([@\w;\-\.\,\!\#\$\%\~\'\"]*)", self::REGEX],
+        self::LANGUAGE => ["^X-WR-CALNAME;LANGUAGE=([\w]*)", self::REGEX],
+        self::CAL_NAME => ["X-WR-CALNAME", self::FREE_TEXT],
+        self::CAL_DESC => ["X-WR-CALDESC", self::FREE_TEXT],
+        self::RELCAID => ["^X-WR-RELCALID;LANGUAGE=\w*:(\w*)", self::REGEX],
+        self::TZID => ["^X-WR-TIMEZONE;LANGUAGE=\w*:(\w*[\/|\\]\w*)", self::REGEX],
+        self::X_DTSTAMP => ["^X-DTSTAMP;TYPE=DATE-TIME:(\w*)", self::REGEX]
     ];
 
     /**
@@ -160,38 +166,51 @@ final class Subscription extends ACalendar
         $vcalendar = $this->insert_time_zone($vcalendar, $vtimezone);
 
         $file = new file();
-        $file->delete_file_on_destroy()
-            ->set_tmp_directory($this->tmp_directory)
+        $file->set_tmp_directory($this->tmp_directory)
+            ->delete_file_on_destroy()
             ->save($vcalendar, $this->relcaid);
 
         $this->public_location = $this->file_location_handler->save($file);
 
-        $this->load($this->public_location);
-
-        return $this;
+        return $this->public_location;
     }
 
     /**
      * Load a file from its public location to edit it
      * @param  string $public_location
-     * @return string
+     * @return boolean true if the file was correctly loaded and the subscription
+     * and time zone was correctly loaded from the string
      */
     public function load($public_location)
     {
         $this->public_location = $public_location;
 
         $this->ics_file = new file();
-        $this->ics_file->delete_file_on_destroy()
-            ->set_tmp_directory($this->tmp_directory);
+        $this->ics_file->set_tmp_directory($this->tmp_directory)
+            ->delete_file_on_destroy();
 
         $file_path = $this->file_location_handler->load(
             $this->public_location,
             $this->ics_file->get_tmp_directory()
         );
 
-        $this->ics_file->open($file_path);
+        $this->time_zone = new VTimeZone();
 
-        return $this;
+        // Open the file and load the subscription and timezone object using
+        // the attributes defined on static::object_attributes
+        return $this->ics_file->open($file_path) &&
+            $this->time_zone->load_from_file($this->ics_file) &&
+            $this->load_from_file($this->ics_file);
+    }
+
+    /**
+     * Delete a calendar subscription
+     * @param  string $public_location location where the file can be found
+     * @return boolean
+     */
+    public function delete($public_location)
+    {
+        return $this->file_location_handler->delete($public_location);
     }
 
     /**

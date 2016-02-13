@@ -53,6 +53,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
             "X-WR-RELCALID;LANGUAGE=EN:12312313" . Build::FIELD_DELIMITER .
             "X-WR-TIMEZONE;LANGUAGE=EN:America/Costa_Rica" . Build::FIELD_DELIMITER .
             "X-DTSTAMP;TYPE=DATE-TIME:20160128T232158" . Build::FIELD_DELIMITER .
+            "X-END=TRUE" . Build::FIELD_DELIMITER .
             "END:VCALENDAR"  . Build::FIELD_DELIMITER;
 
         $this->assertEquals($generated_content, $content_test);

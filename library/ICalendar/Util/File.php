@@ -73,7 +73,7 @@ class File
 
     /**
      * Open a file path
-     * @return File handler
+     * @return boolean true if the result was correctly opened
      */
     public function open($file_path)
     {
@@ -85,7 +85,7 @@ class File
             Error::set(Error::ERROR_NO_READABLE, [$this->file_path], Error::ERROR);
         }
 
-        $this->open_handler();
+        return $this->open_handler();
     }
 
 
@@ -143,11 +143,39 @@ class File
      */
     public function get_all_content()
     {
-        if (empty($this->file_handler)) {
+        if (!is_resource($this->file_handler)) {
             Error::set(Error::ERROR_NO_OPENED, [$this->file_path], Error::ERROR);
         }
 
         return fread($this->file_handler, filesize($this->file_path));
+    }
+
+    /**
+     * Get the text file beetween the opening tag and the closing tag. If no
+     * id was specify so the first ocurrence of the object will be return
+     * @param  string $opening_tag
+     * @param  string $closing_tag
+     * @param  string $id          unique vobject id
+     * @return string
+     */
+    public function get_line_content($opening_tag, $closing_tag, $id = null)
+    {
+        if (!is_resource($this->file_handler)) {
+            Error::set(Error::ERROR_NO_OPENED, [$this->file_path], Error::ERROR);
+        }
+
+        var_dump($this->get_all_content());
+        exit;
+        while (!feof($this->file_handler)) {
+            var_dump(fgets($this->file_handler));
+            exit;
+            $line = iconv(
+                'utf-8',
+                'utf-8//TRANSLIT//IGNORE',
+                utf8_encode(fgets($this->file_handler))
+            );
+
+        }
     }
 
     /**
@@ -213,10 +241,13 @@ class File
 
     /**
      * Open file handler
+     * @return boolean true on successfull operation
      */
     private function open_handler()
     {
         $this->file_handler = fopen($this->file_path, $this->file_open_mode);
+
+        return is_resource($this->file_handler);
     }
 
     /**

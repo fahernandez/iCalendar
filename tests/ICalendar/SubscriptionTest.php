@@ -110,6 +110,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             "X-WR-RELCALID;LANGUAGE=ES:1232131231321" . Build::FIELD_DELIMITER .
             "X-WR-TIMEZONE;LANGUAGE=ES:America/Costa_Rica" . Build::FIELD_DELIMITER .
             "X-DTSTAMP;TYPE=DATE-TIME:20000101T000000" . Build::FIELD_DELIMITER .
+            "X-END=TRUE" . Build::FIELD_DELIMITER .
             "END:VCALENDAR"  . Build::FIELD_DELIMITER;
 
         $this->assertEquals($generated_content, $content_test);
@@ -121,7 +122,6 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
      * Test Create a new calendar subscription
      * @depends test_create_instance_aws
      * @covers ICalendar\Subscription::create
-     * @covers ICalendar\Subscription::load
      * @covers ICalendar\Subscription::insert_time_zone
      * @covers ICalendar\Subscription::set_tmp_directory
      * @return void
@@ -147,6 +147,44 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             $subscription->public_location,
             "https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics"
         );
+    }
+
+    /**
+     * Test delete a calendar subscription
+     * @depends test_create_instance_aws
+     * @covers ICalendar\Subscription::delete
+     * @return void
+     */
+    public function test_delete_aws()
+    {
+        $subscription = new Subscription($this->awss3);
+
+        vfsstream::newFile('56aaa297a8019.ics')
+            ->at(vfsStreamWrapper::getRoot());
+
+        $result = $subscription
+            ->delete("https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics");
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test load a calendar subscription
+     * @depends test_create_instance_aws
+     * @covers ICalendar\Subscription::load
+     * @return void
+     */
+    public function test_load_aws()
+    {
+        $subscription = new Subscription($this->awss3);
+
+        vfsstream::newFile('56aaa297a8019.ics')
+            ->at(vfsStreamWrapper::getRoot());
+
+        $result = $subscription
+            ->load("https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics");
+
+        $this->assertTrue($result);
     }
 
 

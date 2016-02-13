@@ -11,5 +11,7 @@ ok 9 - StatusTest::test_exists
 ok 10 - SubscriptionTest::test_create_instance_aws
 ok 11 - SubscriptionTest::test_build_aws
 ok 12 - SubscriptionTest::test_create_aws
-ok 13 - TimeZoneTest::test_build_time_zone
-1..13
+ok 13 - SubscriptionTest::test_delete_aws
+ok 14 - SubscriptionTest::test_load_aws
+ok 15 - TimeZoneTest::test_build_time_zone
+1..15

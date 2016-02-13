@@ -31,6 +31,12 @@ final class TimeZone extends ACalendar
     const VTEMPLATE = 'VTimeZone.txt';
 
     /**
+     * VTimeZone Opening and closing tag
+     */
+    const OPENING_TAG = 'BEGIN:VTIMEZONE';
+    const CLOSING_TAG = 'END:VTIMEZONE';
+
+    /**
      * Calendar time zone parameters
      */
     const TZID = 'tzid';
@@ -106,13 +112,13 @@ final class TimeZone extends ACalendar
      *      of the attribute on the vcalendar text object
      */
     protected static $object_attributes = [
-        self::TZID => 'TZID',
-        self::STANDARD_DTSTART => 'DTSTART',
-        self::OFFSET_FROM => 'TZOFFSETFROM',
-        self::OFFSET_TO => 'TZOFFSETTO',
-        self::STANDARD_TZNAME => 'TZNAME',
-        self::DAYLIGHT_DTSTART => 'DTSTART',
-        self::DAYLIGHT_TZNAME => 'TZNAME'
+        self::TZID => ["^TZID:(\w*[\/|\\]\w*)", self::REGEX],
+        self::STANDARD_DTSTART => ["^DTSTART:(\w*)", self::REGEX],
+        self::OFFSET_FROM => ["^TZOFFSETFROM:([-\d]*)", self::REGEX],
+        self::OFFSET_TO => ["^TZOFFSETTO:([-\d]*)", self::REGEX],
+        self::STANDARD_TZNAME => ["^TZNAME:([\w]*)", self::REGEX],
+        self::DAYLIGHT_DTSTART => ["^DTSTART:(\w*)", self::REGEX],
+        self::DAYLIGHT_TZNAME => ["^TZNAME:([\w]*)", self::REGEX]
     ];
 
     /**
