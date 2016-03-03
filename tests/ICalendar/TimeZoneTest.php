@@ -61,7 +61,7 @@ class TimeZoneTest extends PHPUnit_Framework_TestCase
             "TZOFFSETTO:-0500" . Build::FIELD_DELIMITER .
             "TZNAME:DLT" . Build::FIELD_DELIMITER .
             "END:DAYLIGHT" . Build::FIELD_DELIMITER .
-            "END:VTIMEZONE"  . Build::FIELD_DELIMITER;
+            "END:VTIMEZONE";
 
         $generated_content = $time_zone->build();
 

@@ -111,7 +111,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             "X-WR-TIMEZONE;LANGUAGE=ES:America/Costa_Rica" . Build::FIELD_DELIMITER .
             "X-DTSTAMP;TYPE=DATE-TIME:20000101T000000" . Build::FIELD_DELIMITER .
             "X-END=TRUE" . Build::FIELD_DELIMITER .
-            "END:VCALENDAR"  . Build::FIELD_DELIMITER;
+            "END:VCALENDAR";
 
         $this->assertEquals($generated_content, $content_test);
 

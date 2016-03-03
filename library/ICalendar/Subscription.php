@@ -319,12 +319,12 @@ final class Subscription extends ACalendar
      */
     public function insert_time_zone($vcalendar, $vtimezone)
     {
-        $separated_content = preg_split(Build::SPLIT_LINES_REGEX, $vcalendar);
-        $end_vcalendar = $separated_content[count($separated_content)-1];
-        $separated_content[count($separated_content)-1] = $vtimezone;
-        array_push($separated_content, $end_vcalendar);
+        $calendar_separated_content = explode(Build::FIELD_DELIMITER, $vcalendar);
+        $time_zone_separated_content = explode(Build::FIELD_DELIMITER, $vtimezone);
+        $time_zone_separated_content[] = array_pop($calendar_separated_content);
 
-        return implode($separated_content);
+        return implode(Build::FIELD_DELIMITER, $calendar_separated_content) .
+            implode(Build::FIELD_DELIMITER, $time_zone_separated_content);
     }
 
     /**

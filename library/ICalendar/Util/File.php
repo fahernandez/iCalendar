@@ -164,17 +164,12 @@ class File
             Error::set(Error::ERROR_NO_OPENED, [$this->file_path], Error::ERROR);
         }
 
-        var_dump($this->get_all_content());
-        exit;
         while (!feof($this->file_handler)) {
-            var_dump(fgets($this->file_handler));
-            exit;
             $line = iconv(
                 'utf-8',
                 'utf-8//TRANSLIT//IGNORE',
                 utf8_encode(fgets($this->file_handler))
             );
-
         }
     }
 

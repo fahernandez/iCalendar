@@ -54,7 +54,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
             "X-WR-TIMEZONE;LANGUAGE=EN:America/Costa_Rica" . Build::FIELD_DELIMITER .
             "X-DTSTAMP;TYPE=DATE-TIME:20160128T232158" . Build::FIELD_DELIMITER .
             "X-END=TRUE" . Build::FIELD_DELIMITER .
-            "END:VCALENDAR"  . Build::FIELD_DELIMITER;
+            "END:VCALENDAR";
 
         $this->assertEquals($generated_content, $content_test);
     }
@@ -94,7 +94,7 @@ class BuildTest extends PHPUnit_Framework_TestCase
             "TZOFFSETTO:-0500" . Build::FIELD_DELIMITER .
             "TZNAME:DES" . Build::FIELD_DELIMITER .
             "END:DAYLIGHT" . Build::FIELD_DELIMITER .
-            "END:VTIMEZONE"  . Build::FIELD_DELIMITER;
+            "END:VTIMEZONE";
 
         $this->assertEquals($generated_content, $content_test);
     }

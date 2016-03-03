@@ -29,11 +29,6 @@ class Build
     const FIELD_DELIMITER = "\r\n";
 
     /**
-     * String to split lines by end of line
-     */
-    const SPLIT_LINES_REGEX = '/$\R?^/m';
-
-    /**
      * File handler for the template where the vobject is stored
      */
     private $file_template;
@@ -96,12 +91,12 @@ class Build
      */
     private function format_content($processed_content)
     {
-        $separated_content = preg_split(self::SPLIT_LINES_REGEX, $processed_content);
+        $separated_content = explode(PHP_EOL, $processed_content);
         foreach ($separated_content as $index => $line) {
             $separated_content[$index] = $this->size_75($line);
         }
 
-        return implode($separated_content);
+        return trim(implode('', $separated_content));
     }
 
     /**
