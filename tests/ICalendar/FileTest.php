@@ -20,6 +20,7 @@
 use \ICalendar\Util\File;
 use \org\bovigo\vfs\vfsStream;
 use \org\bovigo\vfs\vfsStreamWrapper;
+use \ICalendar\File\Template\Build;
 
 class FileTest extends PHPUnit_Framework_TestCase
 {
@@ -27,6 +28,19 @@ class FileTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->root = vfsstream::setup('root');
+
+        $this->content_test = "BEGIN:VCALENDAR" . Build::FIELD_DELIMITER .
+            "VERSION:2.0" . Build::FIELD_DELIMITER .
+            "PRODID:-//@hulihealth.com//NONSGML v1.0//ES" . Build::FIELD_DELIMITER .
+            "CALSCALE:GREGORIAN" . Build::FIELD_DELIMITER .
+            "METHOD:PUBLISH" . Build::FIELD_DELIMITER .
+            "X-WR-CALNAME;LANGUAGE=ES:Calendario Huli Practice" . Build::FIELD_DELIMITER .
+            "X-WR-CALDESC;LANGUAGE=ES:Lorem itsum Lorem itsum" . Build::FIELD_DELIMITER .
+            "X-WR-RELCALID;LANGUAGE=ES:1232131231321" . Build::FIELD_DELIMITER .
+            "X-WR-TIMEZONE;LANGUAGE=ES:America/Costa_Rica" . Build::FIELD_DELIMITER .
+            "X-DTSTAMP;TYPE=DATE-TIME:20000101T000000" . Build::FIELD_DELIMITER .
+            "X-END=TRUE" . Build::FIELD_DELIMITER .
+            "END:VCALENDAR";
     }
 
     /**
@@ -82,6 +96,26 @@ class FileTest extends PHPUnit_Framework_TestCase
             $file->get_file_path(),
             $file->get_tmp_directory() . '/test.ics'
         );
+    }
+
+    /**
+     * Test getting a bloke of content from a file
+     * @covers ICalendar\Util\File::get_block_content
+     * @return void
+     */
+    public function test_block_content()
+    {
+        vfsstream::newFile('56aaa297a8019.ics')
+            ->withContent($this->content_test)
+            ->at(vfsStreamWrapper::getRoot());
+
+        $file = new File();
+        $file->delete_file_on_destroy()
+            ->set_tmp_directory(vfsstream::url('root'));
+
+        $file->open('vfs://root/56aaa297a8019.ics');
+
+        $this->assertTrue($file->get_block_content('BEGIN:VCALENDAR', 'END:VCALENDAR') == $this->content_test);
     }
 
 }

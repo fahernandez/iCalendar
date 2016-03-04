@@ -112,13 +112,13 @@ final class TimeZone extends ACalendar
      *      of the attribute on the vcalendar text object
      */
     protected static $object_attributes = [
-        self::TZID => ["^TZID:(\w*[\/|\\]\w*)", self::REGEX],
-        self::STANDARD_DTSTART => ["^DTSTART:(\w*)", self::REGEX],
-        self::OFFSET_FROM => ["^TZOFFSETFROM:([-\d]*)", self::REGEX],
-        self::OFFSET_TO => ["^TZOFFSETTO:([-\d]*)", self::REGEX],
-        self::STANDARD_TZNAME => ["^TZNAME:([\w]*)", self::REGEX],
-        self::DAYLIGHT_DTSTART => ["^DTSTART:(\w*)", self::REGEX],
-        self::DAYLIGHT_TZNAME => ["^TZNAME:([\w]*)", self::REGEX]
+        self::TZID => ['/TZID:(\w*[\\|\/]\w*)/', self::REGEX],
+        self::STANDARD_DTSTART => ['/DTSTART:(\w*)/', self::REGEX],
+        self::OFFSET_FROM => ['/TZOFFSETFROM:([-\d]*)/', self::REGEX],
+        self::OFFSET_TO => ['/TZOFFSETTO:([-\d]*)/', self::REGEX],
+        self::STANDARD_TZNAME => ['/TZNAME:([\w]*)/', self::REGEX],
+        self::DAYLIGHT_DTSTART => ['/DTSTART:(\w*)/', self::REGEX],
+        self::DAYLIGHT_TZNAME => ['/TZNAME:([\w]*)/', self::REGEX]
     ];
 
     /**
@@ -225,11 +225,12 @@ final class TimeZone extends ACalendar
 
     /**
      * Validate the attributes related to the Vtimezone object
-     * @return void
+     * @return boolean Set an error in case of any the attributes are missing or
+     * true if it was success
      */
-    protected function validate_attributes()
+    public function validate_attributes()
     {
-        parent::validate_attributes();
+        return parent::validate_attributes();
     }
 
 

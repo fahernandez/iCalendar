@@ -4,14 +4,15 @@ ok 2 - BuildTest::test_build_vtimezone
 ok 3 - ErrorTest::test_set_error
 ok 4 - FileTest::test_open
 ok 5 - FileTest::test_save
-ok 6 - LanguageTest::test_exists
-ok 7 - PathTest::test_create_path
-ok 8 - PathTest::test_delete_file
-ok 9 - StatusTest::test_exists
-ok 10 - SubscriptionTest::test_create_instance_aws
-ok 11 - SubscriptionTest::test_build_aws
-ok 12 - SubscriptionTest::test_create_aws
-ok 13 - SubscriptionTest::test_delete_aws
-ok 14 - SubscriptionTest::test_load_aws
-ok 15 - TimeZoneTest::test_build_time_zone
-1..15
+ok 6 - FileTest::test_block_content
+ok 7 - LanguageTest::test_exists
+ok 8 - PathTest::test_create_path
+ok 9 - PathTest::test_delete_file
+ok 10 - StatusTest::test_exists
+ok 11 - SubscriptionTest::test_create_instance_aws
+ok 12 - SubscriptionTest::test_build_aws
+ok 13 - SubscriptionTest::test_create_aws
+ok 14 - SubscriptionTest::test_delete_aws
+ok 15 - SubscriptionTest::test_load_aws
+ok 16 - TimeZoneTest::test_build_time_zone
+1..16

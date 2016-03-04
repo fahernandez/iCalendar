@@ -133,15 +133,18 @@ final class Subscription extends ACalendar
      *      The key represent the name of the attribute on the class
      *      The value represents an regular expresion to get the value
      *      of the attribute on the vcalendar text object
+     *      On Free text fields the thrd attributes indicates the next valid attribute, in other words, the
+     *      end of the attribute so the method must consume everthing among the beginning and the end of
+     *      the attribute
      */
     protected static $object_attributes = [
-        self::PRODID => ["^PRODID:-//([@\w;\-\.\,\!\#\$\%\~\'\"]*)", self::REGEX],
-        self::LANGUAGE => ["^X-WR-CALNAME;LANGUAGE=([\w]*)", self::REGEX],
-        self::CAL_NAME => ["X-WR-CALNAME", self::FREE_TEXT],
-        self::CAL_DESC => ["X-WR-CALDESC", self::FREE_TEXT],
-        self::RELCAID => ["^X-WR-RELCALID;LANGUAGE=\w*:(\w*)", self::REGEX],
-        self::TZID => ["^X-WR-TIMEZONE;LANGUAGE=\w*:(\w*[\/|\\]\w*)", self::REGEX],
-        self::X_DTSTAMP => ["^X-DTSTAMP;TYPE=DATE-TIME:(\w*)", self::REGEX]
+        self::PRODID => ['/PRODID\:\-\/\/([@\w;\-\.\,\!\#\$\%\~\'\"]*)/', self::REGEX],
+        self::LANGUAGE => ['/X-WR-CALNAME;LANGUAGE=([\w]*)/', self::REGEX],
+        self::RELCAID => ['/X-WR-RELCALID;LANGUAGE=\w*:(\w*)/', self::REGEX],
+        self::TZID => ['/X-WR-TIMEZONE;LANGUAGE=\w*:(\w*[\\|\/]\w*)/', self::REGEX],
+        self::X_DTSTAMP => ['/X-DTSTAMP;TYPE=DATE-TIME:(\w*)/', self::REGEX],
+        self::CAL_NAME => ['/^X-WR-CALNAME;LANGUAGE=\w*:/', self::FREE_TEXT, '/^X-WR-CALDESC;LANGUAGE=\w*:/'],
+        self::CAL_DESC => ['/^X-WR-CALDESC;LANGUAGE=\w*:/', self::FREE_TEXT, '/^X-WR-RELCALID;LANGUAGE=\w*:/']
     ];
 
     /**
@@ -323,15 +326,21 @@ final class Subscription extends ACalendar
         $time_zone_separated_content = explode(Build::FIELD_DELIMITER, $vtimezone);
         $time_zone_separated_content[] = array_pop($calendar_separated_content);
 
+        // Add a CRLF char to force the timezone beginning in a new line
+        $calendar_separated_content[count($calendar_separated_content) - 1] =
+            $calendar_separated_content[count($calendar_separated_content) - 1] .
+            Build::FIELD_DELIMITER;
+
         return implode(Build::FIELD_DELIMITER, $calendar_separated_content) .
             implode(Build::FIELD_DELIMITER, $time_zone_separated_content);
     }
 
     /**
      * Validated that all the attributes needed for the calendar format are set
-     * @return void Set an error in case of any the attributes are missing
+     * @return boolean Set an error in case of any the attributes are missing or
+     * true if it was success
      */
-    protected function validate_attributes()
+    public function validate_attributes()
     {
         if (!isset($this->x_dtstamp)) {
             $this->x_dtstamp = (new DateTime())->format(VTimeZone::DATETIME_FORMAT);
@@ -341,7 +350,7 @@ final class Subscription extends ACalendar
             $this->tzid = $this->time_zone->tzid;
         }
 
-        parent::validate_attributes();
+        return parent::validate_attributes();
     }
 
 }

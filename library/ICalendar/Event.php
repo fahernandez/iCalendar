@@ -265,9 +265,9 @@ final class Event extends ACalendar
      * Validate the attributes related to the VEvent object
      * @return void
      */
-    protected function validate_attributes()
+    public function validate_attributes()
     {
-        parent::validate_attributes();
+        return parent::validate_attributes();
     }
 
 

@@ -97,11 +97,9 @@ class File
      */
     public function save($content, $name)
     {
-        (new Path())->create_path($this->tmp_directory);
-
         $this->file_path = sprintf(
             self::FILE_LOCATION_FORMAT,
-            $this->tmp_directory,
+            $this->get_tmp_directory(),
             $name
         );
 
@@ -158,19 +156,37 @@ class File
      * @param  string $id          unique vobject id
      * @return string
      */
-    public function get_line_content($opening_tag, $closing_tag, $id = null)
+    public function get_block_content($opening_tag, $closing_tag, $id = null)
     {
         if (!is_resource($this->file_handler)) {
             Error::set(Error::ERROR_NO_OPENED, [$this->file_path], Error::ERROR);
         }
 
+        rewind($this->file_handler);
+        $beginning_found = false;
+        $string_bloke = '';
         while (!feof($this->file_handler)) {
             $line = iconv(
                 'utf-8',
                 'utf-8//TRANSLIT//IGNORE',
-                utf8_encode(fgets($this->file_handler))
+                fgets($this->file_handler)
             );
+            
+            $trim_string = trim($line);
+            if ($trim_string === $opening_tag) {
+                $beginning_found = true;
+            }
+
+            if ($beginning_found) {
+                $string_bloke .= $line;
+            }
+
+            if ($trim_string === $closing_tag) {
+                break;
+            }
         }
+
+        return $string_bloke;
     }
 
     /**
@@ -188,6 +204,7 @@ class File
      */
     public function get_tmp_directory()
     {
+        (new Path())->create_path($this->tmp_directory);
         return $this->tmp_directory;
     }
 

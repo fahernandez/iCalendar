@@ -1,23 +1,23 @@
 
 
 Code Coverage Report:      
-  2016-03-03 01:26:43      
+  2016-03-04 00:43:54      
                            
  Summary:                  
   Classes: 54.55% (6/11)   
   Methods: 64.29% (36/56)  
-  Lines:   58.22% (177/304)
+  Lines:   62.78% (199/317)
 
 \ICalendar::Subscription
-  Methods:  84.62% (11/13)   Lines:  87.72% ( 50/ 57)
+  Methods:  84.62% (11/13)   Lines:  88.14% ( 52/ 59)
 \ICalendar::TimeZone
-  Methods:  77.78% ( 7/ 9)   Lines:  67.74% ( 21/ 31)
+  Methods:  77.78% ( 7/ 9)   Lines:  66.67% ( 20/ 30)
 \ICalendar\File\Template::Build
   Methods:  80.00% ( 4/ 5)   Lines:  40.24% ( 33/ 82)
 \ICalendar\Util::Error
   Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)
 \ICalendar\Util::File
-  Methods:  57.14% ( 8/14)   Lines:  69.12% ( 47/ 68)
+  Methods:  57.14% ( 8/14)   Lines:  85.00% ( 68/ 80)
 \ICalendar\Util::Language
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
 \ICalendar\Util::Path

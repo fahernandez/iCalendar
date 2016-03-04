@@ -35,6 +35,8 @@ class Error
     const ERROR_READABLE = "File %s exist on tmp location, please delete it first.";
     const ERROR_NO_OPENED = "File %s has to be opened first";
     const ERROR_DIR_NO_READABLE = 'Directory %s cannot be access';
+    const ERROR_ATTR_NOT_FOUND = 'Attribute %s was not found on string %s';
+    const DIGEST_METHOD_NOT_FOUND = 'Digest method %s not implemented';
 
     /**
      * Error message format

@@ -59,6 +59,34 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
             ->set_standard_tzname('DST')
             ->set_daylight_dtstart(new DateTime('2000-01-01'))
             ->set_daylight_tzname('DLT');
+
+        $this->content_test =  "BEGIN:VCALENDAR" . Build::FIELD_DELIMITER .
+            "VERSION:2.0" . Build::FIELD_DELIMITER .
+            "PRODID:-//@hulihealth.com//NONSGML v1.0//ES" . Build::FIELD_DELIMITER .
+            "CALSCALE:GREGORIAN" . Build::FIELD_DELIMITER .
+            "METHOD:PUBLISH" . Build::FIELD_DELIMITER .
+            "X-WR-CALNAME;LANGUAGE=ES:Calendario Huli Practice" . Build::FIELD_DELIMITER .
+            "X-WR-CALDESC;LANGUAGE=ES:Lorem itsum Lorem itsum" . Build::FIELD_DELIMITER .
+            "X-WR-RELCALID;LANGUAGE=ES:1232131231321" . Build::FIELD_DELIMITER .
+            "X-WR-TIMEZONE;LANGUAGE=ES:America/Costa_Rica" . Build::FIELD_DELIMITER .
+            "X-DTSTAMP;TYPE=DATE-TIME:20000101T000000" . Build::FIELD_DELIMITER .
+            "X-END=TRUE" . Build::FIELD_DELIMITER .
+            "BEGIN:VTIMEZONE" . Build::FIELD_DELIMITER .
+            "TZID:America/Costa_Rica" . Build::FIELD_DELIMITER .
+            "BEGIN:STANDARD" . Build::FIELD_DELIMITER .
+            "DTSTART:20000101T000000" . Build::FIELD_DELIMITER .
+            "TZOFFSETFROM:-0500" . Build::FIELD_DELIMITER .
+            "TZOFFSETTO:-0600" . Build::FIELD_DELIMITER .
+            "TZNAME:DST" . Build::FIELD_DELIMITER .
+            "END:STANDARD" . Build::FIELD_DELIMITER .
+            "BEGIN:DAYLIGHT" . Build::FIELD_DELIMITER .
+            "DTSTART:20000101T000000" . Build::FIELD_DELIMITER .
+            "TZOFFSETFROM:-0600" . Build::FIELD_DELIMITER .
+            "TZOFFSETTO:-0500" . Build::FIELD_DELIMITER .
+            "TZNAME:DLT" . Build::FIELD_DELIMITER .
+            "END:DAYLIGHT" . Build::FIELD_DELIMITER .
+            "END:VTIMEZONE" . Build::FIELD_DELIMITER .
+            "END:VCALENDAR";
     }
 
     /**
@@ -172,6 +200,7 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
      * Test load a calendar subscription
      * @depends test_create_instance_aws
      * @covers ICalendar\Subscription::load
+     * @covers ICalendar\Subscription::digest_content
      * @return void
      */
     public function test_load_aws()
@@ -179,12 +208,18 @@ class SubscriptionTest extends PHPUnit_Framework_TestCase
         $subscription = new Subscription($this->awss3);
 
         vfsstream::newFile('56aaa297a8019.ics')
+            ->withContent($this->content_test)
             ->at(vfsStreamWrapper::getRoot());
 
         $result = $subscription
             ->load("https://s3-us-west-2.amazonaws.com/calendar.dev.subscription/56aaa297a8019.ics");
 
         $this->assertTrue($result);
+
+        $this->assertTrue($subscription->validate_attributes());
+
+        $this->assertTrue($subscription->time_zone->validate_attributes());
+
     }
 
 
